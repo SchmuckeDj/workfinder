@@ -1,0 +1,71 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ job.title }} — {{ job.company }} | WorkFinder{% endblock %}
+
+{% block content %}
+<section class="detail-section">
+    <div class="container detail-inner">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}">Inicio</a>
+            <span>›</span>
+            <a href="{% url 'job_list' %}">Ofertas</a>
+            <span>›</span>
+            <span>{{ job.title }}</span>
+        </nav>
+
+        <div class="detail-layout">
+
+            <!-- Main content -->
+            <article class="detail-card">
+                <div class="detail-card-header">
+                    <div>
+                        <span class="job-modality badge-{{ job.modality }}">{{ job.get_modality_display }}</span>
+                        <h1 class="detail-title">{{ job.title }}</h1>
+                        <p class="detail-company">{{ job.company }}</p>
+                    </div>
+                </div>
+
+                <div class="detail-meta-row">
+                    <span class="detail-meta-item">📍 {{ job.location }}</span>
+                    {% if job.salary %}<span class="detail-meta-item">💰 {{ job.salary }}</span>{% endif %}
+                    <span class="detail-meta-item">📅 {{ job.published_at|date:"d \d\e F \d\e Y" }}</span>
+                </div>
+
+                <div class="detail-body">
+                    <h2>Descripción del puesto</h2>
+                    <div class="detail-description">
+                        {{ job.description|linebreaks }}
+                    </div>
+                </div>
+
+                <a href="{% url 'job_list' %}" class="btn btn-outline" style="margin-top:2rem;">← Volver a ofertas</a>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="detail-sidebar">
+                <div class="sidebar-card">
+                    <h3>¿Interesado en esta oferta?</h3>
+                    <p>Suscríbete y te avisaremos de nuevas oportunidades similares.</p>
+                    <a href="{% url 'home' %}#suscribete" class="btn btn-primary" style="width:100%; text-align:center; display:block;">
+                        Suscribirme
+                    </a>
+                </div>
+
+                <div class="sidebar-card sidebar-info">
+                    <h4>Resumen</h4>
+                    <ul class="sidebar-list">
+                        <li><strong>Empresa:</strong> {{ job.company }}</li>
+                        <li><strong>Modalidad:</strong> {{ job.get_modality_display }}</li>
+                        <li><strong>Ubicación:</strong> {{ job.location }}</li>
+                        {% if job.salary %}<li><strong>Salario:</strong> {{ job.salary }}</li>{% endif %}
+                        <li><strong>Publicado:</strong> {{ job.published_at|date:"d/m/Y" }}</li>
+                    </ul>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

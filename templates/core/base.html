@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}WorkFinder — Tu próximo trabajo te espera{% endblock %}</title>
+    <meta name="description" content="Encuentra las mejores oportunidades laborales. Conectamos talento con empresas que inspiran.">
+
+    <!-- Google Fonts: Syne (display) + DM Sans (body) — combinación moderna y profesional -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar">
+        <div class="container navbar-inner">
+            <a href="{% url 'home' %}" class="navbar-brand">
+                <span class="brand-dot"></span>
+                WorkFinder
+            </a>
+            <div class="navbar-links">
+                <a href="{% url 'job_list' %}">Ver ofertas</a>
+                <a href="{% url 'home' %}#suscribete" class="btn btn-outline-sm">Suscribirme</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ====== MESSAGES (Django flash messages) ====== -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ====== CONTENIDO PRINCIPAL ====== -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p class="footer-brand">WorkFinder</p>
+            <p class="footer-tagline">Conectando talento con oportunidades.</p>
+            <p class="footer-copy">© 2025 WorkFinder. Hecho con ♥ y Django.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'core/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

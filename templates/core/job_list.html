@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Todas las ofertas | WorkFinder{% endblock %}
+
+{% block content %}
+<section class="jobs-section" style="padding-top: 5rem;">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">Todas las ofertas</h1>
+            <p class="section-subtitle">Explora las {{ paginator.count }} oportunidades disponibles.</p>
+        </div>
+
+        {% if jobs %}
+        <div class="jobs-grid">
+            {% for job in jobs %}
+            <article class="job-card">
+                <div class="job-card-header">
+                    <div class="job-modality badge-{{ job.modality }}">{{ job.get_modality_display }}</div>
+                    <time class="job-date" datetime="{{ job.published_at|date:'Y-m-d' }}">
+                        {{ job.published_at|date:"d M Y" }}
+                    </time>
+                </div>
+                <h3 class="job-title">{{ job.title }}</h3>
+                <p class="job-company">{{ job.company }}</p>
+                <p class="job-description">{{ job.short_description }}</p>
+                <div class="job-meta">
+                    <span class="job-meta-item"><span class="meta-icon">📍</span>{{ job.location }}</span>
+                    {% if job.salary %}<span class="job-meta-item"><span class="meta-icon">💰</span>{{ job.salary }}</span>{% endif %}
+                </div>
+                <a href="{% url 'job_detail' job.pk %}" class="btn btn-card">Ver más →</a>
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- Paginación -->
+        {% if is_paginated %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">← Anterior</a>
+            {% endif %}
+            <span class="page-info">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="page-btn">Siguiente →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <span class="empty-icon">🔍</span>
+            <h3>No hay ofertas disponibles</h3>
+            <p>Vuelve pronto, estamos añadiendo nuevas oportunidades.</p>
+            <a href="{% url 'home' %}#suscribete" class="btn btn-primary" style="margin-top:1rem;">Suscribirme y ser el primero</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
