@@ -1,0 +1,110 @@
+<!-- =====================================================
+     PARTIAL: _afiliados.html
+     Carrusel horizontal de cursos / herramientas / libros.
+     Cada acard es un enlace de afiliado independiente.
+     Para agregar una card: duplica un bloque <a class="acard">
+     y cambia href, emoji/color, badge, título, desc y precio.
+===================================================== -->
+<section class="afiliados-section" id="recursos">
+    <div class="container afiliados-header">
+        <div>
+            <div class="afiliados-eyebrow">⭐ Recomendados</div>
+            <h2 class="section-title">Cursos y herramientas</h2>
+            <p class="section-sub">Recursos seleccionados para impulsar tu carrera</p>
+        </div>
+    </div>
+
+    <div class="hcarousel-outer">
+        <div class="hcarousel-wrapper">
+
+            <div class="hcarousel-track" id="hcarousel-track">
+
+                <a class="acard" href="https://tuenlace.com/curso-react" target="_blank" rel="noopener sponsored">
+                    <div class="acard-img-placeholder">⚛️</div>
+                    <div class="acard-body">
+                        <span class="acard-badge acard-badge-curso">Curso</span>
+                        <p class="acard-title">React & Next.js — De cero a Senior</p>
+                        <p class="acard-desc">80+ horas de contenido práctico del mercado hispanohablante.</p>
+                        <div class="acard-footer">
+                            <div><p class="acard-price">$49</p><p class="acard-price-old">$149</p></div>
+                            <span class="acard-btn">Ver curso</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a class="acard" href="https://tuenlace.com/libro-entrevistas" target="_blank" rel="noopener sponsored">
+                    <div class="acard-img-placeholder" style="background:linear-gradient(135deg,#E4F5EE,#EBF0FF);">📚</div>
+                    <div class="acard-body">
+                        <span class="acard-badge acard-badge-libro">Libro</span>
+                        <p class="acard-title">Código la entrevista — Algoritmos y estructuras</p>
+                        <p class="acard-desc">La guía definitiva para entrevistas técnicas en empresas top.</p>
+                        <div class="acard-footer">
+                            <div><p class="acard-price">$25</p><p class="acard-price-old">$45</p></div>
+                            <span class="acard-btn">Comprar</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a class="acard" href="https://tuenlace.com/notion-template" target="_blank" rel="noopener sponsored">
+                    <div class="acard-img-placeholder" style="background:linear-gradient(135deg,#FFF0D6,#E4F5EE);">🗂️</div>
+                    <div class="acard-body">
+                        <span class="acard-badge acard-badge-tool">Herramienta</span>
+                        <p class="acard-title">Kit de búsqueda de empleo en Notion</p>
+                        <p class="acard-desc">Organiza postulaciones, contactos y seguimiento de entrevistas.</p>
+                        <div class="acard-footer">
+                            <div><p class="acard-price">$9</p></div>
+                            <span class="acard-btn">Descargar</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a class="acard" href="https://tuenlace.com/cv-pro" target="_blank" rel="noopener sponsored">
+                    <div class="acard-img-placeholder" style="background:linear-gradient(135deg,#EBF0FF,#C1CEFF);">📄</div>
+                    <div class="acard-body">
+                        <span class="acard-badge acard-badge-tool">Herramienta</span>
+                        <p class="acard-title">CV Pro — Constructor de currículum ATS</p>
+                        <p class="acard-desc">Crea un CV que pase los filtros automáticos. 100+ plantillas.</p>
+                        <div class="acard-footer">
+                            <div><p class="acard-price">Gratis</p></div>
+                            <span class="acard-btn">Usar gratis</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a class="acard" href="https://tuenlace.com/python-data" target="_blank" rel="noopener sponsored">
+                    <div class="acard-img-placeholder" style="background:linear-gradient(135deg,#FEEAEA,#FFF0D6);">🐍</div>
+                    <div class="acard-body">
+                        <span class="acard-badge acard-badge-curso">Curso</span>
+                        <p class="acard-title">Python para Data Science y ML</p>
+                        <p class="acard-desc">Las habilidades más demandadas del mercado tech en 2025.</p>
+                        <div class="acard-footer">
+                            <div><p class="acard-price">$39</p><p class="acard-price-old">$99</p></div>
+                            <span class="acard-btn">Ver curso</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a class="acard" href="https://tuenlace.com/linkedin-pro" target="_blank" rel="noopener sponsored">
+                    <div class="acard-img-placeholder" style="background:linear-gradient(135deg,#E4F5EE,#FFF0D6);">💼</div>
+                    <div class="acard-body">
+                        <span class="acard-badge acard-badge-promo">Oferta</span>
+                        <p class="acard-title">LinkedIn Premium — 2 meses gratis</p>
+                        <p class="acard-desc">Aparece en más búsquedas y ve quién visita tu perfil.</p>
+                        <div class="acard-footer">
+                            <div><p class="acard-price">Gratis</p><p class="acard-price-old">2 meses</p></div>
+                            <span class="acard-btn">Activar</span>
+                        </div>
+                    </div>
+                </a>
+
+            </div><!-- /hcarousel-track -->
+
+        </div><!-- /hcarousel-wrapper -->
+
+        <!-- Flechas fuera del wrapper para que no queden enmascaradas por el fade -->
+        <button class="hcarousel-arrow hcarousel-prev" id="hcarousel-prev" aria-label="Anterior">←</button>
+        <button class="hcarousel-arrow hcarousel-next" id="hcarousel-next" aria-label="Siguiente">→</button>
+    </div><!-- /hcarousel-outer -->
+
+    <div class="hcarousel-dots" id="hcarousel-dots"></div>
+</section>

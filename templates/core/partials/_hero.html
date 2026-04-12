@@ -1,0 +1,69 @@
+{% load static %}
+<!-- =====================================================
+     PARTIAL: _hero.html
+     Sección hero de la home. Recibe: jobs_count
+===================================================== -->
+<section class="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-grid-fade"></div>
+    <div class="container hero-inner">
+
+        <div class="hero-text">
+            <div class="hero-eyebrow">
+                <span class="hero-eyebrow-dot"></span>
+                {{ jobs_count }} oportunidades activas
+            </div>
+            <h1 class="hero-title">
+                Tu próximo trabajo<br>
+                te está <mark>esperando</mark>
+            </h1>
+            <p class="hero-subtitle">
+                Conectamos a los mejores profesionales con empresas que inspiran.
+                Ofertas reales, empresas que valoran tu talento.
+            </p>
+            <div class="hero-actions">
+                <a href="#ofertas" class="btn btn-blue">Ver ofertas →</a>
+                <a href="#suscribete" class="btn btn-outline">Recibir alertas</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><strong>{{ jobs_count }}</strong><span>Ofertas activas</span></div>
+                <div class="hero-stat"><strong>500+</strong><span>Empresas</span></div>
+                <div class="hero-stat"><strong>12k+</strong><span>Candidatos</span></div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-card-stack">
+                <div class="hero-card-bg-1"></div>
+                <div class="hero-card-bg-2"></div>
+                <div class="hero-card">
+                    <span class="hero-badge-floating">Nuevo</span>
+                    <div class="hero-card-company">
+                        <div class="company-logo">TC</div>
+                        <div>
+                            <p class="hero-card-title">Senior Frontend Dev</p>
+                            <p class="hero-card-company-name">TechCorp · Santo Domingo</p>
+                        </div>
+                    </div>
+                    <div class="hero-card-tags">
+                        <span class="tag tag-blue">Remoto</span>
+                        <span class="tag tag-green">React</span>
+                        <span class="tag tag-amber">Senior</span>
+                    </div>
+                    <div class="hero-card-salary">
+                        <div>
+                            <p class="salary-amount">RD$80,000</p>
+                            <p class="salary-label">/ mes</p>
+                        </div>
+                        <a href="#ofertas" class="btn btn-primary btn-sm">Aplicar</a>
+                    </div>
+                </div>
+                <div class="hero-match">
+                    <div class="match-score">97%</div>
+                    <div><p class="match-label">Match con<br>tu perfil</p></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

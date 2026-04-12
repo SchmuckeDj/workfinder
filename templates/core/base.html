@@ -6,53 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}WorkFinder — Tu próximo trabajo te espera{% endblock %}</title>
     <meta name="description" content="Encuentra las mejores oportunidades laborales. Conectamos talento con empresas que inspiran.">
-
-    <!-- Google Fonts: Syne (display) + DM Sans (body) — combinación moderna y profesional -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
-
+    <link rel="stylesheet" href="{% static 'core/css/components.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-    <!-- ====== NAVBAR ====== -->
     <nav class="navbar">
         <div class="container navbar-inner">
             <a href="{% url 'home' %}" class="navbar-brand">
-                <span class="brand-dot"></span>
+                <span class="brand-icon">
+                    <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="6" height="6" rx="1.5" fill="white"/>
+                        <rect x="10" y="2" width="6" height="6" rx="1.5" fill="white" opacity="0.5"/>
+                        <rect x="2" y="10" width="6" height="6" rx="1.5" fill="white" opacity="0.5"/>
+                        <rect x="10" y="10" width="6" height="6" rx="1.5" fill="#2A5AF5"/>
+                    </svg>
+                </span>
                 WorkFinder
             </a>
             <div class="navbar-links">
-                <a href="{% url 'job_list' %}">Ver ofertas</a>
-                <a href="{% url 'home' %}#suscribete" class="btn btn-outline-sm">Suscribirme</a>
+                <a href="{% url 'job_list' %}" class="nav-link">Ofertas</a>
+                <a href="{% url 'home' %}#suscribete" class="btn btn-primary btn-sm">Suscribirme</a>
             </div>
         </div>
     </nav>
 
-    <!-- ====== MESSAGES (Django flash messages) ====== -->
     {% if messages %}
     <div class="messages-container">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
             {{ message }}
-            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+            <button class="alert-close" onclick="this.parentElement.remove()" aria-label="Cerrar">×</button>
         </div>
         {% endfor %}
     </div>
     {% endif %}
 
-    <!-- ====== CONTENIDO PRINCIPAL ====== -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <!-- ====== FOOTER ====== -->
     <footer class="footer">
         <div class="container footer-inner">
-            <p class="footer-brand">WorkFinder</p>
-            <p class="footer-tagline">Conectando talento con oportunidades.</p>
-            <p class="footer-copy">© 2025 WorkFinder. Hecho con ♥ y Django.</p>
+            <div>
+                <p class="footer-brand">WorkFinder</p>
+                <p class="footer-tagline">Conectando talento con oportunidades reales.</p>
+            </div>
+            <p class="footer-copy">© 2025 WorkFinder. Hecho con Django.</p>
         </div>
     </footer>
 

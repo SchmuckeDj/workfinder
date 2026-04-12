@@ -1,12 +1,14 @@
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-clave-cambiar-en-produccion-abc123'
-
-DEBUG = True
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -17,7 +19,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'automation',
-    
 ]
 
 MIDDLEWARE = [
@@ -58,22 +59,35 @@ DATABASES = {
 }
 
 LANGUAGE_CODE = 'es-es'
-TIME_ZONE = 'America/Mexico_City'
+TIME_ZONE = os.getenv('TIME_ZONE', 'America/Santo_Domingo')
 USE_I18N = True
 USE_TZ = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MESSAGE_TAGS = {
-    10: 'debug',
-    20: 'info',
-    25: 'success',
-    30: 'warning',
-    40: 'error',
+    10: 'debug', 20: 'info', 25: 'success', 30: 'warning', 40: 'error',
 }
+
+# ── APIs ──
+ANTHROPIC_API_KEY    = os.getenv('ANTHROPIC_API_KEY')
+TESSERACT_CMD        = os.getenv('TESSERACT_CMD', 'tesseract')
+AUTOMATION_API_TOKEN = os.getenv('AUTOMATION_API_TOKEN', '')
+
+# ── Email ──
+# En desarrollo usa ConsoleBackend para ver emails en terminal.
+# En producción cambia a smtp y rellena las variables en .env
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+
+EMAIL_HOST          = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT          = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_TLS       = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER     = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL  = os.getenv('DEFAULT_FROM_EMAIL', 'WorkFinder <noreply@workfinder.com>')
+SITE_NAME           = 'WorkFinder'
+SITE_URL            = os.getenv('SITE_URL', 'http://localhost:8000')

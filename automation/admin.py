@@ -7,9 +7,28 @@ from .services import create_job_from_incoming
 @admin.register(IncomingJob)
 class IncomingJobAdmin(admin.ModelAdmin):
 
-    list_display = ('preview_image', 'source', 'status', 'created_at')
-    list_filter = ('status', 'source')
-    search_fields = ('raw_message',)
+    list_display = (
+        'preview_image',
+        'source',
+        'status',
+        'job_created',
+        'created_at',
+    )
+
+    list_filter = (
+        'status',
+        'source',
+        'job_created',
+    )
+
+    search_fields = (
+        'raw_message',
+    )
+
+    readonly_fields = (
+        'preview_image',
+        'created_at',
+    )
 
     def preview_image(self, obj):
         if obj.image:
@@ -23,10 +42,23 @@ class IncomingJobAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
 
-        if obj.status == "approved" and not obj.job_created:
+        if (
+            obj.status == "approved"
+            and not obj.job_created
+        ):
+            try:
+                create_job_from_incoming(obj)
+                obj.job_created = True
 
-            create_job_from_incoming(obj)
+                self.message_user(
+                    request,
+                    "La oferta fue procesada y creada correctamente."
+                )
 
-            obj.job_created = True
+            except Exception as e:
+                self.message_user(
+                    request,
+                    f"Error procesando la oferta: {e}"
+                )
 
         super().save_model(request, obj, form, change)

@@ -27,3 +27,4 @@ class SubscriberForm(forms.ModelForm):
                 'invalid': 'Por favor ingresa un correo válido.',
             }
         }
+    

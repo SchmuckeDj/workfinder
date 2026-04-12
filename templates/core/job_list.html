@@ -3,42 +3,85 @@
 {% block title %}Todas las ofertas | WorkFinder{% endblock %}
 
 {% block content %}
-<section class="jobs-section" style="padding-top: 5rem;">
+
+<section class="detail-hero">
     <div class="container">
-        <div class="section-header">
-            <h1 class="section-title">Todas las ofertas</h1>
-            <p class="section-subtitle">Explora las {{ paginator.count }} oportunidades disponibles.</p>
+        <nav class="breadcrumb" aria-label="Navegación">
+            <a href="{% url 'home' %}">Inicio</a>
+            <span class="breadcrumb-sep">›</span>
+            <span>Ofertas</span>
+        </nav>
+        <h1 class="section-title">Todas las ofertas</h1>
+        <p class="section-sub" style="margin-top:0.5rem">
+            {% if paginator.count == 1 %}
+                1 oportunidad disponible
+            {% else %}
+                {{ paginator.count }} oportunidades disponibles
+            {% endif %}
+        </p>
+    </div>
+</section>
+
+<div class="filter-bar">
+    <div class="container filter-inner">
+        <span class="filter-label">Filtrar</span>
+        <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">Todos</button>
+            <button class="filter-pill" data-filter="presencial">Presencial</button>
+            <button class="filter-pill" data-filter="remoto">Remoto</button>
+            <button class="filter-pill" data-filter="hibrido">Híbrido</button>
         </div>
+        <span class="filter-count">{{ paginator.count }} resultados</span>
+    </div>
+</div>
+
+<section class="jobs-section">
+    <div class="container">
 
         {% if jobs %}
-        <div class="jobs-grid">
+        <div class="jobs-grid" id="jobs-grid">
             {% for job in jobs %}
-            <article class="job-card">
-                <div class="job-card-header">
-                    <div class="job-modality badge-{{ job.modality }}">{{ job.get_modality_display }}</div>
-                    <time class="job-date" datetime="{{ job.published_at|date:'Y-m-d' }}">
-                        {{ job.published_at|date:"d M Y" }}
-                    </time>
+            <article class="job-card card-hidden" data-modality="{{ job.modality }}">
+
+                <div class="job-card-top">
+                    <div class="job-company-logo">
+                        {{ job.company|slice:":2"|upper }}
+                    </div>
+                    <span class="job-modality badge-{{ job.modality }}">{{ job.get_modality_display }}</span>
                 </div>
-                <h3 class="job-title">{{ job.title }}</h3>
-                <p class="job-company">{{ job.company }}</p>
-                <p class="job-description">{{ job.short_description }}</p>
-                <div class="job-meta">
-                    <span class="job-meta-item"><span class="meta-icon">📍</span>{{ job.location }}</span>
-                    {% if job.salary %}<span class="job-meta-item"><span class="meta-icon">💰</span>{{ job.salary }}</span>{% endif %}
+
+                <div class="job-body">
+                    <h3 class="job-title">{{ job.title }}</h3>
+                    <p class="job-company-name">{{ job.company }}</p>
+                    <p class="job-description">{{ job.short_description }}</p>
                 </div>
-                <a href="{% url 'job_detail' job.pk %}" class="btn btn-card">Ver más →</a>
+
+                <div class="job-footer">
+                    <div class="job-meta-items">
+                        <span class="job-meta-item">
+                            <span class="meta-dot"></span>
+                            {{ job.location }}
+                        </span>
+                        {% if job.salary %}
+                        <span class="job-meta-item">
+                            <span class="meta-dot"></span>
+                            {{ job.salary }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'job_detail' job.pk %}" class="btn-card-link" aria-label="Ver oferta">→</a>
+                </div>
+
             </article>
             {% endfor %}
         </div>
 
-        <!-- Paginación -->
         {% if is_paginated %}
         <div class="pagination">
             {% if page_obj.has_previous %}
                 <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">← Anterior</a>
             {% endif %}
-            <span class="page-info">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            <span class="page-info">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
             {% if page_obj.has_next %}
                 <a href="?page={{ page_obj.next_page_number }}" class="page-btn">Siguiente →</a>
             {% endif %}
@@ -46,13 +89,17 @@
         {% endif %}
 
         {% else %}
-        <div class="empty-state">
-            <span class="empty-icon">🔍</span>
-            <h3>No hay ofertas disponibles</h3>
-            <p>Vuelve pronto, estamos añadiendo nuevas oportunidades.</p>
-            <a href="{% url 'home' %}#suscribete" class="btn btn-primary" style="margin-top:1rem;">Suscribirme y ser el primero</a>
+        <div class="jobs-grid">
+            <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <h3>No hay ofertas disponibles</h3>
+                <p>Vuelve pronto, estamos añadiendo nuevas oportunidades constantemente.</p>
+                <a href="{% url 'home' %}#suscribete" class="btn btn-blue">Suscribirme y ser el primero</a>
+            </div>
         </div>
         {% endif %}
+
     </div>
 </section>
+
 {% endblock %}

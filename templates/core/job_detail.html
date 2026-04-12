@@ -3,69 +3,151 @@
 {% block title %}{{ job.title }} — {{ job.company }} | WorkFinder{% endblock %}
 
 {% block content %}
-<section class="detail-section">
-    <div class="container detail-inner">
 
-        <!-- Breadcrumb -->
-        <nav class="breadcrumb">
+<section class="detail-hero">
+    <div class="container">
+
+        <nav class="breadcrumb" aria-label="Navegación">
             <a href="{% url 'home' %}">Inicio</a>
-            <span>›</span>
+            <span class="breadcrumb-sep">›</span>
             <a href="{% url 'job_list' %}">Ofertas</a>
-            <span>›</span>
+            <span class="breadcrumb-sep">›</span>
             <span>{{ job.title }}</span>
         </nav>
 
+        <div class="detail-header">
+            <div class="detail-company-logo">
+                {{ job.company|slice:":2"|upper }}
+            </div>
+            <div class="detail-title-group">
+                <h1 class="detail-title">{{ job.title }}</h1>
+                <p class="detail-company">{{ job.company }}</p>
+            </div>
+        </div>
+
+        <div class="detail-pills">
+            <span class="detail-pill"><span>📍</span> {{ job.location }}</span>
+            <span class="job-modality badge-{{ job.modality }}" style="padding:0.35rem 0.9rem;font-size:0.72rem;">{{ job.get_modality_display }}</span>
+            {% if job.salary %}<span class="detail-pill"><span>💰</span> {{ job.salary }}</span>{% endif %}
+            <span class="detail-pill"><span>📅</span> {{ job.published_at|date:"d \d\e F \d\e Y" }}</span>
+        </div>
+
+    </div>
+</section>
+
+<section class="detail-section">
+    <div class="container">
         <div class="detail-layout">
 
-            <!-- Main content -->
-            <article class="detail-card">
-                <div class="detail-card-header">
-                    <div>
-                        <span class="job-modality badge-{{ job.modality }}">{{ job.get_modality_display }}</span>
-                        <h1 class="detail-title">{{ job.title }}</h1>
-                        <p class="detail-company">{{ job.company }}</p>
+            <!-- Contenido principal -->
+            <div>
+                <div class="detail-card">
+                    <div class="detail-card-section">
+                        <p class="detail-card-section-title">Descripción del puesto</p>
+                        <div class="detail-description">{{ job.description|linebreaks }}</div>
                     </div>
-                </div>
 
-                <div class="detail-meta-row">
-                    <span class="detail-meta-item">📍 {{ job.location }}</span>
-                    {% if job.salary %}<span class="detail-meta-item">💰 {{ job.salary }}</span>{% endif %}
-                    <span class="detail-meta-item">📅 {{ job.published_at|date:"d \d\e F \d\e Y" }}</span>
-                </div>
-
-                <div class="detail-body">
-                    <h2>Descripción del puesto</h2>
-                    <div class="detail-description">
-                        {{ job.description|linebreaks }}
+                    {% if job.requirements %}
+                    <div class="detail-card-section">
+                        <p class="detail-card-section-title">Requisitos</p>
+                        <div class="detail-description">{{ job.requirements|linebreaks }}</div>
                     </div>
+                    {% endif %}
+
+                    {% if job.benefits %}
+                    <div class="detail-card-section">
+                        <p class="detail-card-section-title">Beneficios</p>
+                        <div class="detail-description">{{ job.benefits|linebreaks }}</div>
+                    </div>
+                    {% endif %}
                 </div>
 
-                <a href="{% url 'job_list' %}" class="btn btn-outline" style="margin-top:2rem;">← Volver a ofertas</a>
-            </article>
+                <div style="margin-top:1.5rem;">
+                    <a href="{% url 'job_list' %}" class="btn btn-outline">← Volver a ofertas</a>
+                </div>
+            </div>
 
-            <!-- Sidebar -->
+            <!-- Sidebar derecho -->
             <aside class="detail-sidebar">
+
+                <!-- CTA suscripción -->
                 <div class="sidebar-card">
-                    <h3>¿Interesado en esta oferta?</h3>
-                    <p>Suscríbete y te avisaremos de nuevas oportunidades similares.</p>
-                    <a href="{% url 'home' %}#suscribete" class="btn btn-primary" style="width:100%; text-align:center; display:block;">
-                        Suscribirme
-                    </a>
+                    <div class="sidebar-card-inner">
+                        <h3 class="sidebar-card-title">¿Te interesa esta oferta?</h3>
+                        <p>Suscríbete y te avisaremos de oportunidades similares.</p>
+                    </div>
+                    <a href="{% url 'home' %}#suscribete" class="sidebar-cta">Suscribirme →</a>
                 </div>
 
-                <div class="sidebar-card sidebar-info">
-                    <h4>Resumen</h4>
-                    <ul class="sidebar-list">
-                        <li><strong>Empresa:</strong> {{ job.company }}</li>
-                        <li><strong>Modalidad:</strong> {{ job.get_modality_display }}</li>
-                        <li><strong>Ubicación:</strong> {{ job.location }}</li>
-                        {% if job.salary %}<li><strong>Salario:</strong> {{ job.salary }}</li>{% endif %}
-                        <li><strong>Publicado:</strong> {{ job.published_at|date:"d/m/Y" }}</li>
-                    </ul>
+                <!-- FIX: tabla de info con layout corregido -->
+                <div class="sidebar-card">
+                    <table class="sidebar-table">
+                        <tbody>
+                            <tr>
+                                <td class="sidebar-table-key">Empresa</td>
+                                <td class="sidebar-table-val">{{ job.company }}</td>
+                            </tr>
+                            <tr>
+                                <td class="sidebar-table-key">Modalidad</td>
+                                <td class="sidebar-table-val">{{ job.get_modality_display }}</td>
+                            </tr>
+                            <tr>
+                                <td class="sidebar-table-key">Ubicación</td>
+                                <td class="sidebar-table-val">{{ job.location }}</td>
+                            </tr>
+                            {% if job.salary %}
+                            <tr>
+                                <td class="sidebar-table-key">Salario</td>
+                                <td class="sidebar-table-val">{{ job.salary }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if job.experience %}
+                            <tr>
+                                <td class="sidebar-table-key">Experiencia</td>
+                                <td class="sidebar-table-val">{{ job.experience }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if job.schedule %}
+                            <tr>
+                                <td class="sidebar-table-key">Horario</td>
+                                <td class="sidebar-table-val">{{ job.schedule }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td class="sidebar-table-key">Publicado</td>
+                                <td class="sidebar-table-val">{{ job.published_at|date:"d/m/Y" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+
+                {% if job.email or job.phone %}
+                <div class="sidebar-card">
+                    <table class="sidebar-table">
+                        <tbody>
+                            {% if job.email %}
+                            <tr>
+                                <td class="sidebar-table-key">Email</td>
+                                <td class="sidebar-table-val">
+                                    <a href="mailto:{{ job.email }}" style="color:var(--color-blue);">{{ job.email }}</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% if job.phone %}
+                            <tr>
+                                <td class="sidebar-table-key">Teléfono</td>
+                                <td class="sidebar-table-val">{{ job.phone }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+
             </aside>
 
         </div>
     </div>
 </section>
+
 {% endblock %}

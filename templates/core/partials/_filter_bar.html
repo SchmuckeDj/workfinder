@@ -1,0 +1,19 @@
+<!-- =====================================================
+     PARTIAL: _filter_bar.html
+     Barra de filtros sticky. Recibe: jobs_count
+===================================================== -->
+<div class="filter-bar" id="ofertas">
+    <div class="container filter-inner">
+        <span class="filter-label">Filtrar</span>
+        <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">Todos</button>
+            <button class="filter-pill" data-filter="presencial">Presencial</button>
+            <button class="filter-pill" data-filter="remoto">Remoto</button>
+            <button class="filter-pill" data-filter="hibrido">Híbrido</button>
+        </div>
+        <div class="filter-right">
+            <span class="filter-count">{{ jobs_count }} resultados</span>
+            <a href="{% url 'job_list' %}" class="btn btn-primary btn-sm">Ver todas las ofertas</a>
+        </div>
+    </div>
+</div>

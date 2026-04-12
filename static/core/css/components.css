@@ -1,0 +1,451 @@
+/* ============================================================
+   WORKFINDER — components.css v5
+============================================================ */
+
+/* ── Hero match ── */
+.hero-match {
+  position: absolute;
+  bottom: -8px;
+  left: -16px;
+  z-index: 10;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  animation: float-match 4s ease-in-out infinite 0.5s;
+  white-space: nowrap;
+}
+@keyframes float-match {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+.match-score {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-green);
+  line-height: 1;
+}
+.match-label {
+  font-size: 0.72rem;
+  color: var(--color-ink-muted);
+  line-height: 1.5;
+}
+.hero-visual { padding-bottom: var(--space-16) !important; }
+
+/* ============================================================
+   FILTER BAR — con botón "Ver todas" a la derecha
+============================================================ */
+.filter-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.filter-count {
+  font-size: 0.78rem;
+  color: var(--color-ink-ghost);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   LAYOUT OFERTAS + SIDEBAR IZQUIERDO
+============================================================ */
+.jobs-with-sidebar {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+.jobs-main { min-width: 0; }
+.jobs-main .jobs-grid { grid-template-columns: repeat(2, 1fr); }
+
+.left-sidebar {
+  position: sticky;
+  top: calc(64px + 57px + var(--space-6));
+}
+.sidebar-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-ink-ghost);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-3);
+}
+
+/* ── Carrusel vertical ── */
+.vcarousel {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  height: 260px;
+}
+.vcarousel-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform;
+}
+.vcard {
+  flex-shrink: 0;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.vcard-img-placeholder {
+  width: 100%;
+  height: 130px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: var(--color-blue-dim);
+}
+.vcard-body {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-height: 0;
+}
+.vcard-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-ink-ghost);
+  border: 1px solid var(--color-border);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+.vcard-badge-green { background: var(--color-green-dim); color: var(--color-green); border-color: var(--color-green-dim); }
+.vcard-badge-blue  { background: var(--color-blue-dim);  color: var(--color-blue);  border-color: var(--color-blue-mid); }
+.vcard-badge-amber { background: var(--color-amber-dim); color: var(--color-amber); border-color: var(--color-amber-dim); }
+.vcard-title {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.vcard-cta {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--color-blue);
+  margin-top: auto;
+}
+.vcard:hover .vcard-cta { color: var(--color-blue-dark); }
+
+.vcarousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+}
+.vcarousel-btn {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.vcarousel-btn:hover { background: var(--color-ink); color: white; border-color: var(--color-ink); }
+.vcarousel-indicator { font-size: 0.68rem; color: var(--color-ink-ghost); }
+
+/* ============================================================
+   SECCIÓN AFILIADOS — carrusel horizontal
+   FIX: hcarousel-outer es el contexto de posición de las flechas.
+        hcarousel-wrapper tiene el overflow:hidden + mask.
+        Las flechas están DENTRO de outer pero FUERA de wrapper,
+        así no quedan enmascaradas por el fade lateral.
+============================================================ */
+.afiliados-section {
+  padding: var(--space-16) 0 var(--space-12);
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+}
+.afiliados-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8);
+}
+.afiliados-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-amber-dim);
+  color: var(--color-amber);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px var(--space-3);
+  border-radius: 999px;
+  border: 1px solid var(--color-amber-dim);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+/* Outer: contexto de posición, sin overflow */
+.hcarousel-outer {
+  position: relative;
+}
+
+/* Wrapper: solo el overflow + mask (NO position:relative para flechas) */
+.hcarousel-wrapper {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.hcarousel-track {
+  display: flex;
+  gap: var(--space-5);
+  padding: var(--space-2) var(--space-10) var(--space-6);
+  transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform;
+  /* CLAVE: cursor grab para indicar que es arrastrable */
+  cursor: grab;
+  user-select: none;
+}
+.hcarousel-track.dragging { cursor: grabbing; transition: none; }
+
+/* Card de afiliado */
+.acard {
+  flex-shrink: 0;
+  width: 240px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+  text-decoration: none;
+  color: inherit;
+  pointer-events: auto;
+}
+.hcarousel-track.dragging .acard { pointer-events: none; }
+.acard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border-2);
+}
+.acard-img-placeholder {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, var(--color-blue-dim) 0%, var(--color-green-dim) 100%);
+  flex-shrink: 0;
+}
+.acard-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+.acard-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+.acard-badge-curso { background: var(--color-blue-dim);  color: var(--color-blue); }
+.acard-badge-libro { background: var(--color-green-dim); color: var(--color-green); }
+.acard-badge-tool  { background: var(--color-amber-dim); color: var(--color-amber); }
+.acard-badge-promo { background: var(--color-red-dim);   color: var(--color-red); }
+
+.acard-title {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.acard-desc {
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+  line-height: 1.5;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.acard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  gap: var(--space-2);
+}
+.acard-price {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-ink);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.acard-price-old {
+  font-size: 0.72rem;
+  color: var(--color-ink-ghost);
+  text-decoration: line-through;
+}
+.acard-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-ink);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.acard:hover .acard-btn { background: var(--color-blue); }
+
+/* Flechas — posicionadas sobre hcarousel-outer, no sobre wrapper */
+.hcarousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(calc(-50% - 16px)); /* sube un poco para centrar en las cards */
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-ink);
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all 0.22s;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+}
+.hcarousel-arrow:hover:not(:disabled) { background: var(--color-ink); color: white; border-color: var(--color-ink); }
+.hcarousel-arrow:disabled { opacity: 0.3; cursor: default; }
+.hcarousel-prev { left: var(--space-4); }
+.hcarousel-next { right: var(--space-4); }
+
+/* Dots */
+.hcarousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: var(--space-5);
+}
+.hcarousel-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--color-border-2);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.22s;
+}
+.hcarousel-dot.active { background: var(--color-ink); width: 20px; border-radius: 3px; }
+
+/* ============================================================
+   FIX: SIDEBAR TABLE en job_detail
+============================================================ */
+.sidebar-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.sidebar-table-key {
+  font-size: 0.75rem;
+  color: var(--color-ink-ghost);
+  padding: var(--space-3) var(--space-4);
+  width: 40%;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+.sidebar-table-val {
+  font-size: 0.82rem;
+  color: var(--color-ink);
+  font-weight: 500;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+  word-break: break-word;
+}
+.sidebar-table tr:last-child .sidebar-table-key,
+.sidebar-table tr:last-child .sidebar-table-val { border-bottom: none; }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 1024px) {
+  .jobs-with-sidebar { grid-template-columns: 1fr; }
+
+  .left-sidebar {
+    position: static;
+    display: flex;
+    gap: var(--space-3);
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .left-sidebar::-webkit-scrollbar { display: none; }
+  .sidebar-section-label { display: none; }
+
+  .vcarousel { height: auto; border: none; background: transparent; overflow: visible; flex-shrink: 0; }
+  .vcarousel-track { flex-direction: row; gap: var(--space-3); }
+  .vcard { height: 220px; min-width: 160px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); }
+  .vcarousel-controls { display: none; }
+  .jobs-main .jobs-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .jobs-main .jobs-grid { grid-template-columns: 1fr; }
+  .acard { width: 200px; }
+  .filter-right .btn { display: none; }   /* en móvil el botón ocupa mucho */
+  .hero-visual { padding-bottom: var(--space-20) !important; }
+}

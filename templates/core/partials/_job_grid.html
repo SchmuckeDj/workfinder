@@ -1,0 +1,58 @@
+<!-- =====================================================
+     PARTIAL: _job_grid.html
+     Grid de ofertas con estado vacío.
+     Recibe: jobs (lista), job_list url
+===================================================== -->
+<div class="jobs-main">
+    <div class="section-header">
+        <div>
+            <h2 class="section-title">Ofertas disponibles</h2>
+            <p class="section-sub">Oportunidades reales con empresas que inspiran</p>
+        </div>
+    </div>
+
+    {% if jobs %}
+    <div class="jobs-grid" id="jobs-grid">
+        {% for job in jobs %}
+        <article class="job-card card-hidden" data-modality="{{ job.modality }}">
+
+            <div class="job-card-top">
+                <div class="job-company-logo">{{ job.company|slice:":2"|upper }}</div>
+                <span class="job-modality badge-{{ job.modality }}">{{ job.get_modality_display }}</span>
+            </div>
+
+            <div class="job-body">
+                <h3 class="job-title">{{ job.title }}</h3>
+                <p class="job-company-name">{{ job.company }}</p>
+                <p class="job-description">{{ job.short_description }}</p>
+            </div>
+
+            <div class="job-footer">
+                <div class="job-meta-items">
+                    <span class="job-meta-item">
+                        <span class="meta-dot"></span>{{ job.location }}
+                    </span>
+                    {% if job.salary %}
+                    <span class="job-meta-item">
+                        <span class="meta-dot"></span>{{ job.salary }}
+                    </span>
+                    {% endif %}
+                </div>
+                <a href="{% url 'job_detail' job.pk %}" class="btn-card-link" aria-label="Ver oferta">→</a>
+            </div>
+
+        </article>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="jobs-grid">
+        <div class="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <h3>No hay ofertas disponibles aún</h3>
+            <p>Suscríbete para ser el primero en enterarte.</p>
+            <a href="#suscribete" class="btn btn-blue" style="margin-top:1rem">Suscribirme</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
