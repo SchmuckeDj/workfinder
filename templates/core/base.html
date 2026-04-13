@@ -16,6 +16,7 @@
 
     <nav class="navbar">
         <div class="container navbar-inner">
+
             <a href="{% url 'home' %}" class="navbar-brand">
                 <span class="brand-icon">
                     <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,10 +28,19 @@
                 </span>
                 WorkFinder
             </a>
+
             <div class="navbar-links">
                 <a href="{% url 'job_list' %}" class="nav-link">Ofertas</a>
+
+                <!-- Botón Cursos → ancla a la sección #recursos en home, o página propia -->
+                <a href="{% url 'home' %}#recursos" class="nav-link-courses">
+                    <span class="nav-link-courses-dot"></span>
+                    Cursos
+                </a>
+
                 <a href="{% url 'home' %}#suscribete" class="btn btn-primary btn-sm">Suscribirme</a>
             </div>
+
         </div>
     </nav>
 

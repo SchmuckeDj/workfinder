@@ -1,5 +1,5 @@
 /* ============================================================
-   WORKFINDER — components.css v5
+   WORKFINDER — components.css v6
 ============================================================ */
 
 /* ── Hero match ── */
@@ -38,7 +38,7 @@
 .hero-visual { padding-bottom: var(--space-16) !important; }
 
 /* ============================================================
-   FILTER BAR — con botón "Ver todas" a la derecha
+   FILTER BAR
 ============================================================ */
 .filter-right {
   margin-left: auto;
@@ -77,54 +77,72 @@
   margin-bottom: var(--space-3);
 }
 
-/* ── Carrusel vertical ── */
+/* ── Carrusel vertical — 2 cards por slide ── */
 .vcarousel {
   overflow: hidden;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
-  height: 260px;
+  /* Altura = 2 cards de 130px + gap 4px entre ellas */
+  height: 268px;
 }
+
 .vcarousel-track {
   display: flex;
   flex-direction: column;
   transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
   will-change: transform;
 }
-.vcard {
+
+/* Cada slide agrupa 2 vcards y ocupa toda la altura del viewport */
+.vslide {
   flex-shrink: 0;
-  height: 260px;
+  height: 268px;          /* debe coincidir con .vcarousel height */
   display: flex;
   flex-direction: column;
+  gap: 4px;               /* separación mínima entre las dos cards */
+}
+
+/* Cada vcard dentro del slide ocupa exactamente la mitad */
+.vcard {
+  flex: 1;                /* 50% del slide */
+  display: flex;
+  flex-direction: row;    /* imagen a la izquierda, texto a la derecha */
   overflow: hidden;
-  box-sizing: border-box;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+  background: var(--color-surface);
+  transition: background var(--dur, 0.22s);
 }
+.vcard:hover { background: var(--color-bg); }
+
+/* Imagen lateral pequeña */
 .vcard-img-placeholder {
-  width: 100%;
-  height: 130px;
+  width: 68px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
   background: var(--color-blue-dim);
 }
+
 .vcard-body {
-  padding: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 3px;
   flex: 1;
-  min-height: 0;
+  min-width: 0;
+  justify-content: center;
 }
+
 .vcard-badge {
   display: inline-block;
-  font-size: 0.6rem;
+  font-size: 0.56rem;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: 999px;
   background: var(--color-bg);
   color: var(--color-ink-ghost);
@@ -136,25 +154,30 @@
 .vcard-badge-green { background: var(--color-green-dim); color: var(--color-green); border-color: var(--color-green-dim); }
 .vcard-badge-blue  { background: var(--color-blue-dim);  color: var(--color-blue);  border-color: var(--color-blue-mid); }
 .vcard-badge-amber { background: var(--color-amber-dim); color: var(--color-amber); border-color: var(--color-amber-dim); }
+
 .vcard-title {
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--color-ink);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 .vcard-cta {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 600;
   color: var(--color-blue);
-  margin-top: auto;
 }
 .vcard:hover .vcard-cta { color: var(--color-blue-dark); }
+
+/* Separador entre las dos cards del slide */
+.vslide .vcard:first-child {
+  border-bottom: 1px solid var(--color-border);
+}
 
 .vcarousel-controls {
   display: flex;
@@ -179,10 +202,6 @@
 
 /* ============================================================
    SECCIÓN AFILIADOS — carrusel horizontal
-   FIX: hcarousel-outer es el contexto de posición de las flechas.
-        hcarousel-wrapper tiene el overflow:hidden + mask.
-        Las flechas están DENTRO de outer pero FUERA de wrapper,
-        así no quedan enmascaradas por el fade lateral.
 ============================================================ */
 .afiliados-section {
   padding: var(--space-16) 0 var(--space-12);
@@ -212,32 +231,23 @@
   text-transform: uppercase;
   margin-bottom: var(--space-3);
 }
-
-/* Outer: contexto de posición, sin overflow */
-.hcarousel-outer {
-  position: relative;
-}
-
-/* Wrapper: solo el overflow + mask (NO position:relative para flechas) */
+.hcarousel-outer { position: relative; }
 .hcarousel-wrapper {
   overflow: hidden;
   mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
 }
-
 .hcarousel-track {
   display: flex;
   gap: var(--space-5);
   padding: var(--space-2) var(--space-10) var(--space-6);
   transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
   will-change: transform;
-  /* CLAVE: cursor grab para indicar que es arrastrable */
   cursor: grab;
   user-select: none;
 }
 .hcarousel-track.dragging { cursor: grabbing; transition: none; }
 
-/* Card de afiliado */
 .acard {
   flex-shrink: 0;
   width: 240px;
@@ -253,11 +263,8 @@
   pointer-events: auto;
 }
 .hcarousel-track.dragging .acard { pointer-events: none; }
-.acard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--color-border-2);
-}
+.acard:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--color-border-2); }
+
 .acard-img-placeholder {
   width: 100%;
   height: 140px;
@@ -268,13 +275,7 @@
   background: linear-gradient(135deg, var(--color-blue-dim) 0%, var(--color-green-dim) 100%);
   flex-shrink: 0;
 }
-.acard-body {
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  flex: 1;
-}
+.acard-body { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
 .acard-badge {
   display: inline-block;
   font-size: 0.62rem;
@@ -321,19 +322,8 @@
   border-top: 1px solid var(--color-border);
   gap: var(--space-2);
 }
-.acard-price {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--color-ink);
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-.acard-price-old {
-  font-size: 0.72rem;
-  color: var(--color-ink-ghost);
-  text-decoration: line-through;
-}
+.acard-price { font-family: var(--font-display); font-size: 1rem; font-weight: 800; color: var(--color-ink); letter-spacing: -0.03em; line-height: 1; }
+.acard-price-old { font-size: 0.72rem; color: var(--color-ink-ghost); text-decoration: line-through; }
 .acard-btn {
   display: inline-flex;
   align-items: center;
@@ -349,11 +339,10 @@
 }
 .acard:hover .acard-btn { background: var(--color-blue); }
 
-/* Flechas — posicionadas sobre hcarousel-outer, no sobre wrapper */
 .hcarousel-arrow {
   position: absolute;
   top: 50%;
-  transform: translateY(calc(-50% - 16px)); /* sube un poco para centrar en las cards */
+  transform: translateY(calc(-50% - 16px));
   width: 40px; height: 40px;
   border-radius: 50%;
   background: var(--color-surface);
@@ -371,59 +360,54 @@
 .hcarousel-prev { left: var(--space-4); }
 .hcarousel-next { right: var(--space-4); }
 
-/* Dots */
-.hcarousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: var(--space-5);
-}
-.hcarousel-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--color-border-2);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.22s;
-}
+.hcarousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: var(--space-5); }
+.hcarousel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-border-2); border: none; cursor: pointer; padding: 0; transition: all 0.22s; }
 .hcarousel-dot.active { background: var(--color-ink); width: 20px; border-radius: 3px; }
 
 /* ============================================================
-   FIX: SIDEBAR TABLE en job_detail
+   SIDEBAR TABLE en job_detail
 ============================================================ */
-.sidebar-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-.sidebar-table-key {
-  font-size: 0.75rem;
-  color: var(--color-ink-ghost);
-  padding: var(--space-3) var(--space-4);
-  width: 40%;
-  vertical-align: middle;
-  border-bottom: 1px solid var(--color-border);
-  white-space: nowrap;
-}
-.sidebar-table-val {
-  font-size: 0.82rem;
-  color: var(--color-ink);
-  font-weight: 500;
-  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-2);
-  border-bottom: 1px solid var(--color-border);
-  vertical-align: middle;
-  word-break: break-word;
-}
+.sidebar-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.sidebar-table-key { font-size: 0.75rem; color: var(--color-ink-ghost); padding: var(--space-3) var(--space-4); width: 40%; vertical-align: middle; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+.sidebar-table-val { font-size: 0.82rem; color: var(--color-ink); font-weight: 500; padding: var(--space-3) var(--space-4) var(--space-3) var(--space-2); border-bottom: 1px solid var(--color-border); vertical-align: middle; word-break: break-word; }
 .sidebar-table tr:last-child .sidebar-table-key,
 .sidebar-table tr:last-child .sidebar-table-val { border-bottom: none; }
+
+/* ============================================================
+   NAVBAR — link de cursos
+============================================================ */
+.nav-link-courses {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-amber);
+  background: var(--color-amber-dim);
+  border: 1px solid #EDD9A3;
+  padding: 0.38rem 0.9rem;
+  border-radius: 999px;
+  transition: all var(--dur, 0.22s);
+  white-space: nowrap;
+}
+.nav-link-courses:hover {
+  background: var(--color-amber);
+  color: white;
+  border-color: var(--color-amber);
+  transform: translateY(-1px);
+}
+.nav-link-courses-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
 
 /* ============================================================
    RESPONSIVE
 ============================================================ */
 @media (max-width: 1024px) {
   .jobs-with-sidebar { grid-template-columns: 1fr; }
-
   .left-sidebar {
     position: static;
     display: flex;
@@ -435,10 +419,13 @@
   }
   .left-sidebar::-webkit-scrollbar { display: none; }
   .sidebar-section-label { display: none; }
-
+  /* En móvil volvemos las vcards al layout vertical simple */
   .vcarousel { height: auto; border: none; background: transparent; overflow: visible; flex-shrink: 0; }
   .vcarousel-track { flex-direction: row; gap: var(--space-3); }
-  .vcard { height: 220px; min-width: 160px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); }
+  .vslide { height: auto; flex-direction: row; gap: var(--space-2); flex-shrink: 0; }
+  .vcard { flex-direction: column; width: 140px; height: 180px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); }
+  .vcard-img-placeholder { width: 100%; height: 80px; }
+  .vcard:first-child { border-bottom: none; }
   .vcarousel-controls { display: none; }
   .jobs-main .jobs-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -446,6 +433,7 @@
 @media (max-width: 640px) {
   .jobs-main .jobs-grid { grid-template-columns: 1fr; }
   .acard { width: 200px; }
-  .filter-right .btn { display: none; }   /* en móvil el botón ocupa mucho */
+  .filter-right .btn { display: none; }
   .hero-visual { padding-bottom: var(--space-20) !important; }
+  .nav-link-courses span:not(.nav-link-courses-dot) { display: none; }
 }
