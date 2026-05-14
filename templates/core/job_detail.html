@@ -4,6 +4,7 @@
 
 {% block content %}
 
+<!-- DETAIL HERO -->
 <section class="detail-hero">
     <div class="container">
 
@@ -35,12 +36,13 @@
     </div>
 </section>
 
+<!-- DETAIL BODY -->
 <section class="detail-section">
     <div class="container">
         <div class="detail-layout">
 
             <!-- Contenido principal -->
-            <div>
+            <div class="detail-main">
                 <div class="detail-card">
                     <div class="detail-card-section">
                         <p class="detail-card-section-title">Descripción del puesto</p>
@@ -62,15 +64,15 @@
                     {% endif %}
                 </div>
 
-                <div style="margin-top:1.5rem;">
+                <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
                     <a href="{% url 'job_list' %}" class="btn btn-outline">← Volver a ofertas</a>
+                    <a href="#section-recursos-detail" class="btn btn-neon">Ver recursos relacionados ↓</a>
                 </div>
             </div>
 
             <!-- Sidebar derecho -->
             <aside class="detail-sidebar">
 
-                <!-- CTA suscripción -->
                 <div class="sidebar-card">
                     <div class="sidebar-card-inner">
                         <h3 class="sidebar-card-title">¿Te interesa esta oferta?</h3>
@@ -79,44 +81,16 @@
                     <a href="{% url 'home' %}#suscribete" class="sidebar-cta">Suscribirme →</a>
                 </div>
 
-                <!-- FIX: tabla de info con layout corregido -->
-                <div class="sidebar-card">
+                <div class="sidebar-card sidebar-card-data">
                     <table class="sidebar-table">
                         <tbody>
-                            <tr>
-                                <td class="sidebar-table-key">Empresa</td>
-                                <td class="sidebar-table-val">{{ job.company }}</td>
-                            </tr>
-                            <tr>
-                                <td class="sidebar-table-key">Modalidad</td>
-                                <td class="sidebar-table-val">{{ job.get_modality_display }}</td>
-                            </tr>
-                            <tr>
-                                <td class="sidebar-table-key">Ubicación</td>
-                                <td class="sidebar-table-val">{{ job.location }}</td>
-                            </tr>
-                            {% if job.salary %}
-                            <tr>
-                                <td class="sidebar-table-key">Salario</td>
-                                <td class="sidebar-table-val">{{ job.salary }}</td>
-                            </tr>
-                            {% endif %}
-                            {% if job.experience %}
-                            <tr>
-                                <td class="sidebar-table-key">Experiencia</td>
-                                <td class="sidebar-table-val">{{ job.experience }}</td>
-                            </tr>
-                            {% endif %}
-                            {% if job.schedule %}
-                            <tr>
-                                <td class="sidebar-table-key">Horario</td>
-                                <td class="sidebar-table-val">{{ job.schedule }}</td>
-                            </tr>
-                            {% endif %}
-                            <tr>
-                                <td class="sidebar-table-key">Publicado</td>
-                                <td class="sidebar-table-val">{{ job.published_at|date:"d/m/Y" }}</td>
-                            </tr>
+                            <tr><td class="sidebar-table-key">Empresa</td><td class="sidebar-table-val">{{ job.company }}</td></tr>
+                            <tr><td class="sidebar-table-key">Modalidad</td><td class="sidebar-table-val">{{ job.get_modality_display }}</td></tr>
+                            <tr><td class="sidebar-table-key">Ubicación</td><td class="sidebar-table-val">{{ job.location }}</td></tr>
+                            {% if job.salary %}<tr><td class="sidebar-table-key">Salario</td><td class="sidebar-table-val">{{ job.salary }}</td></tr>{% endif %}
+                            {% if job.experience %}<tr><td class="sidebar-table-key">Experiencia</td><td class="sidebar-table-val">{{ job.experience }}</td></tr>{% endif %}
+                            {% if job.schedule %}<tr><td class="sidebar-table-key">Horario</td><td class="sidebar-table-val">{{ job.schedule }}</td></tr>{% endif %}
+                            <tr><td class="sidebar-table-key">Publicado</td><td class="sidebar-table-val">{{ job.published_at|date:"d/m/Y" }}</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -128,16 +102,11 @@
                             {% if job.email %}
                             <tr>
                                 <td class="sidebar-table-key">Email</td>
-                                <td class="sidebar-table-val">
-                                    <a href="mailto:{{ job.email }}" style="color:var(--color-blue);">{{ job.email }}</a>
-                                </td>
+                                <td class="sidebar-table-val"><a href="mailto:{{ job.email }}" style="color:var(--color-cyan);">{{ job.email }}</a></td>
                             </tr>
                             {% endif %}
                             {% if job.phone %}
-                            <tr>
-                                <td class="sidebar-table-key">Teléfono</td>
-                                <td class="sidebar-table-val">{{ job.phone }}</td>
-                            </tr>
+                            <tr><td class="sidebar-table-key">Teléfono</td><td class="sidebar-table-val">{{ job.phone }}</td></tr>
                             {% endif %}
                         </tbody>
                     </table>
@@ -149,5 +118,16 @@
         </div>
     </div>
 </section>
+
+<!-- RECURSOS RELACIONADOS: reusa el partial de afiliados -->
+<div id="section-recursos-detail">
+    {% include "core/partials/_afiliados.html" %}
+</div>
+
+<!-- BLOG RELACIONADO -->
+{% include "core/partials/_blog.html" %}
+
+<!-- CTA SUSCRIPCIÓN -->
+{% include "core/partials/_subscribe.html" %}
 
 {% endblock %}

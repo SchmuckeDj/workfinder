@@ -5,24 +5,28 @@
 
 {% block content %}
 
+{# SECTION 1 — HERO #}
 {% include "core/partials/_hero.html" %}
 
+{# SECTION 2 — OFERTAS (sidebar destacados a la IZQUIERDA, cards a la derecha) #}
 {% include "core/partials/_filter_bar.html" %}
 
-<section class="jobs-section">
+<section class="jobs-section" id="section-ofertas">
     <div class="container">
         <div class="jobs-with-sidebar">
             {% include "core/partials/_sidebar_destacados.html" %}
-            
             {% include "core/partials/_job_grid.html" %}
         </div>
     </div>
 </section>
 
-
-
+{# SECTION 3 — CURSOS Y HERRAMIENTAS #}
 {% include "core/partials/_afiliados.html" %}
 
+{# SECTION 4 — BLOG #}
+{% include "core/partials/_blog.html" %}
+
+{# SECTION 5 — SUSCRIPCIÓN #}
 {% include "core/partials/_subscribe.html" %}
 
 {% endblock %}

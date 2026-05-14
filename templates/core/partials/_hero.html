@@ -1,11 +1,17 @@
 {% load static %}
 <!-- =====================================================
      PARTIAL: _hero.html
-     Sección hero de la home. Recibe: jobs_count
+     SECTION 1: Hero con visual futurista animado.
+     En lugar de card estática, muestra un orb con órbitas
+     animadas + stats flotantes. Más dinámico, menos vacío.
 ===================================================== -->
-<section class="hero">
+<section class="hero hero-futuristic">
+
     <div class="hero-grid-bg"></div>
     <div class="hero-grid-fade"></div>
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+
     <div class="container hero-inner">
 
         <div class="hero-text">
@@ -22,8 +28,13 @@
                 Ofertas reales, empresas que valoran tu talento.
             </p>
             <div class="hero-actions">
-                <a href="#ofertas" class="btn btn-blue">Ver ofertas →</a>
-                <a href="#suscribete" class="btn btn-outline">Recibir alertas</a>
+                <a href="#section-ofertas" class="btn btn-neon">
+                    <span>Ver ofertas</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8H13M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <a href="#suscribete" class="btn btn-outline-neon">Recibir alertas</a>
             </div>
             <div class="hero-stats">
                 <div class="hero-stat"><strong>{{ jobs_count }}</strong><span>Ofertas activas</span></div>
@@ -32,37 +43,64 @@
             </div>
         </div>
 
-        <div class="hero-visual">
-            <div class="hero-card-stack">
-                <div class="hero-card-bg-1"></div>
-                <div class="hero-card-bg-2"></div>
-                <div class="hero-card">
-                    <span class="hero-badge-floating">Nuevo</span>
-                    <div class="hero-card-company">
-                        <div class="company-logo">TC</div>
-                        <div>
-                            <p class="hero-card-title">Senior Frontend Dev</p>
-                            <p class="hero-card-company-name">TechCorp · Santo Domingo</p>
-                        </div>
+        <!-- VISUAL FUTURISTA: orb central + órbitas + chips flotantes -->
+        <div class="hero-visual hero-visual-futuristic hide-mobile">
+
+            <div class="orb-scene">
+
+                <!-- Órbitas animadas -->
+                <div class="orbit orbit-1"></div>
+                <div class="orbit orbit-2"></div>
+                <div class="orbit orbit-3"></div>
+
+                <!-- Partículas de las órbitas -->
+                <div class="orbit-particle orbit-particle-1"></div>
+                <div class="orbit-particle orbit-particle-2"></div>
+                <div class="orbit-particle orbit-particle-3"></div>
+
+                <!-- Orb central -->
+                <div class="orb-core">
+                    <div class="orb-inner">
+                        <span class="orb-emoji">⚡</span>
                     </div>
-                    <div class="hero-card-tags">
-                        <span class="tag tag-blue">Remoto</span>
-                        <span class="tag tag-green">React</span>
-                        <span class="tag tag-amber">Senior</span>
-                    </div>
-                    <div class="hero-card-salary">
-                        <div>
-                            <p class="salary-amount">RD$80,000</p>
-                            <p class="salary-label">/ mes</p>
-                        </div>
-                        <a href="#ofertas" class="btn btn-primary btn-sm">Aplicar</a>
+                    <div class="orb-pulse"></div>
+                </div>
+
+                <!-- Chips flotantes con info -->
+                <div class="float-chip float-chip-1">
+                    <span class="float-chip-dot float-chip-dot-green"></span>
+                    <div>
+                        <strong>Match 97%</strong>
+                        <span>Tu perfil</span>
                     </div>
                 </div>
-                <div class="hero-match">
-                    <div class="match-score">97%</div>
-                    <div><p class="match-label">Match con<br>tu perfil</p></div>
+
+                <div class="float-chip float-chip-2">
+                    <span class="float-chip-icon">💼</span>
+                    <div>
+                        <strong>Senior Dev</strong>
+                        <span>Remoto</span>
+                    </div>
                 </div>
+
+                <div class="float-chip float-chip-3">
+                    <span class="float-chip-dot float-chip-dot-cyan"></span>
+                    <div>
+                        <strong>RD$80K</strong>
+                        <span>/ mes</span>
+                    </div>
+                </div>
+
+                <div class="float-chip float-chip-4">
+                    <span class="float-chip-icon">🚀</span>
+                    <div>
+                        <strong>Nuevo</strong>
+                        <span>Hace 2h</span>
+                    </div>
+                </div>
+
             </div>
+
         </div>
 
     </div>

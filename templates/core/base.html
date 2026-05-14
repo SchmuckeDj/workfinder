@@ -14,6 +14,7 @@
 </head>
 <body>
 
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="container navbar-inner">
 
@@ -29,20 +30,37 @@
                 WorkFinder
             </a>
 
+            <!-- Links desktop: una entrada por cada section del home -->
             <div class="navbar-links">
-                <a href="{% url 'job_list' %}" class="nav-link">Ofertas</a>
-
-                <!-- Botón Cursos → ancla a la sección #recursos en home, o página propia -->
+                <a href="{% url 'home' %}#section-ofertas" class="nav-link">Ofertas</a>
                 <a href="{% url 'home' %}#recursos" class="nav-link-courses">
                     <span class="nav-link-courses-dot"></span>
-                    Cursos
+                    <span class="nav-link-courses-text">Cursos</span>
                 </a>
-
+                <a href="{% url 'home' %}#blog" class="nav-link">Blog</a>
+                <a href="{% url 'job_list' %}" class="nav-link">Todas las ofertas</a>
                 <a href="{% url 'home' %}#suscribete" class="btn btn-primary btn-sm">Suscribirme</a>
             </div>
 
+            <!-- Hamburguesa móvil -->
+            <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+
         </div>
     </nav>
+
+    <!-- Drawer móvil: mismo orden que desktop -->
+    <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+        <a href="{% url 'home' %}#section-ofertas" class="nav-link">Ofertas</a>
+        <a href="{% url 'home' %}#recursos" class="nav-link-courses">
+            <span class="nav-link-courses-dot"></span>
+            Cursos
+        </a>
+        <a href="{% url 'home' %}#blog" class="nav-link">Blog</a>
+        <a href="{% url 'job_list' %}" class="nav-link">Todas las ofertas</a>
+        <a href="{% url 'home' %}#suscribete" class="btn btn-primary">Suscribirme</a>
+    </div>
 
     {% if messages %}
     <div class="messages-container">

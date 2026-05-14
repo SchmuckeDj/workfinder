@@ -7,6 +7,11 @@ venv/
 env/
 .venv/
 
+# claude environments
+CLAUDE.md
+.claude
+.agents
+
 # Django
 db.sqlite3
 *.sqlite3

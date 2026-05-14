@@ -1,0 +1,134 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Blog & recursos | WorkFinder{% endblock %}
+
+{% block content %}
+
+<section class="detail-hero">
+    <div class="container">
+        <nav class="breadcrumb" aria-label="Navegación">
+            <a href="{% url 'home' %}">Inicio</a>
+            <span class="breadcrumb-sep">›</span>
+            <span>Blog</span>
+        </nav>
+        <div class="blog-eyebrow">
+            <span class="blog-eyebrow-glow"></span>
+            📝 Blog &amp; recursos
+        </div>
+        <h1 class="section-title blog-title">Aprende, crece y postúlate mejor</h1>
+        <p class="section-sub" style="margin-top:0.5rem">
+            <span id="blog-count">{{ articulos|length }}</span> artículo{% if articulos|length != 1 %}s{% endif %} disponible{% if articulos|length != 1 %}s{% endif %}
+        </p>
+    </div>
+</section>
+
+<section class="blog-section">
+    <div class="container">
+
+        {% if articulos %}
+
+        <div class="blog-filters" id="blog-filters">
+            <button class="blog-filter-btn active" data-cat="all">Todos</button>
+            {% regroup articulos by category as cat_list %}
+            {% for cat in cat_list %}
+            <button class="blog-filter-btn" data-cat="{{ cat.grouper }}">{{ cat.grouper }}</button>
+            {% endfor %}
+        </div>
+
+        <div class="blog-grid" id="blog-grid">
+            {% for a in articulos %}
+            <article class="blog-card" data-cat="{{ a.category }}">
+                <div class="blog-card-image">
+                    {% if a.image %}<img src="{{ a.image.url }}" alt="{{ a.title }}" loading="lazy">{% endif %}
+                    <span class="blog-card-badge blog-card-badge-left">{{ a.badge }}</span>
+                </div>
+                <div class="blog-card-body">
+                    <div class="blog-card-meta">
+                        <span class="blog-card-category">{{ a.category }}</span>
+                        <span class="blog-card-dot"></span>
+                        <span class="blog-card-time">{{ a.read_time }}</span>
+                    </div>
+                    <h3 class="blog-card-title">{{ a.title }}</h3>
+                    <p class="blog-card-desc">{{ a.description }}</p>
+                    <a href="{{ a.get_absolute_url }}" class="blog-card-btn">
+                        Leer artículo
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 8H13M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <p class="blog-empty-filter" id="blog-empty" style="display:none;text-align:center;padding:2rem;color:var(--color-ink-muted)">
+            No hay artículos en esta categoría aún.
+        </p>
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <h3>Aún no hay artículos publicados</h3>
+            <p>Estamos preparando contenido para impulsar tu carrera profesional.</p>
+            <a href="{% url 'home' %}" class="btn btn-blue">Volver al inicio</a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% if articulos %}
+<style>
+.blog-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+.blog-filter-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-ink, #111);
+    background: transparent;
+    color: var(--color-ink, #111);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.blog-filter-btn:hover,
+.blog-filter-btn.active {
+    background: var(--color-ink, #111);
+    color: #fff;
+}
+</style>
+<script>
+(function () {
+    const btns  = document.querySelectorAll('.blog-filter-btn');
+    const cards = document.querySelectorAll('#blog-grid .blog-card');
+    const count = document.getElementById('blog-count');
+    const empty = document.getElementById('blog-empty');
+
+    btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cat = btn.dataset.cat;
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            let visible = 0;
+            cards.forEach(card => {
+                const show = cat === 'all' || card.dataset.cat === cat;
+                card.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+
+            count.textContent = visible;
+            empty.style.display = visible === 0 ? 'block' : 'none';
+        });
+    });
+})();
+</script>
+{% endif %}
+
+{% endblock %}

@@ -1,11 +1,12 @@
 <!-- =====================================================
      PARTIAL: _afiliados.html
-     Carrusel horizontal de cursos / herramientas / libros.
-     Cada acard es un enlace de afiliado independiente.
-     Para agregar una card: duplica un bloque <a class="acard">
-     y cambia href, emoji/color, badge, título, desc y precio.
+     SECTION 3 — Cursos y herramientas con carrusel horizontal.
+     Cada .acard es un enlace de afiliado. Para añadir uno,
+     duplica un bloque <a class="acard"> y edita href, badge,
+     título, descripción y precio.
 ===================================================== -->
 <section class="afiliados-section" id="recursos">
+
     <div class="container afiliados-header">
         <div>
             <div class="afiliados-eyebrow">⭐ Recomendados</div>
@@ -16,7 +17,6 @@
 
     <div class="hcarousel-outer">
         <div class="hcarousel-wrapper">
-
             <div class="hcarousel-track" id="hcarousel-track">
 
                 <a class="acard" href="https://tuenlace.com/curso-react" target="_blank" rel="noopener sponsored">
@@ -97,27 +97,23 @@
                     </div>
                 </a>
 
-                <a class="acard" href="https://tuenlace.com/linkedin-pro" target="_blank" rel="noopener sponsored">
-                    <div class="acard-img-placeholder" style="background:linear-gradient(135deg,#E4F5EE,#FFF0D6);">💼</div>
-                    <div class="acard-body">
-                        <span class="acard-badge acard-badge-promo">Oferta</span>
-                        <p class="acard-title">LinkedIn Premium — 2 meses gratis</p>
-                        <p class="acard-desc">Aparece en más búsquedas y ve quién visita tu perfil.</p>
-                        <div class="acard-footer">
-                            <div><p class="acard-price">Gratis</p><p class="acard-price-old">2 meses</p></div>
-                            <span class="acard-btn">Activar</span>
-                        </div>
-                    </div>
-                </a>
-
             </div><!-- /hcarousel-track -->
-
         </div><!-- /hcarousel-wrapper -->
 
-        <!-- Flechas fuera del wrapper para que no queden enmascaradas por el fade -->
         <button class="hcarousel-arrow hcarousel-prev" id="hcarousel-prev" aria-label="Anterior">←</button>
         <button class="hcarousel-arrow hcarousel-next" id="hcarousel-next" aria-label="Siguiente">→</button>
     </div><!-- /hcarousel-outer -->
 
     <div class="hcarousel-dots" id="hcarousel-dots"></div>
+
+    <!-- CTA section 3 -->
+    <div class="afiliados-cta">
+        <a href="{% url 'recursos' %}" class="btn-outline-neon">
+            Ver todos los recursos
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8H13M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </div>
+
 </section>

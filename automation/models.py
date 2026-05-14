@@ -7,6 +7,9 @@ class IncomingJob(models.Model):
         PENDING = 'pending', 'Pendiente'
         APPROVED = 'approved', 'Aprobado'
         REJECTED = 'rejected', 'Rechazado'
+        DUPLICATED = 'duplicated', 'Duplicado'
+        SPAM = 'spam', 'Spam'
+        INCOMPLETE = 'incomplete', 'Incompleto'
 
     raw_message = models.TextField(verbose_name="Mensaje original")
 
@@ -19,6 +22,14 @@ class IncomingJob(models.Model):
 
     source = models.CharField(max_length=100, default='whatsapp', verbose_name="Fuente")
     job_created = models.BooleanField(default=False, verbose_name="Oferta creada")
+    duplicate_of = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        verbose_name="Duplicado de",
+        related_name='duplicates',
+    )
 
     status = models.CharField(
         max_length=20,

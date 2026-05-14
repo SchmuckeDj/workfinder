@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — WorkFinder</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F6F5F1;
+      --surface: #fff;
+      --ink: #111110;
+      --ink-soft: #555;
+      --border: #E2E0DA;
+      --blue: #2A5AF5;
+      --green: #16A070;
+      --amber: #C97B1A;
+      --red: #D94040;
+      --violet: #7C3AED;
+      --radius: 12px;
+      --shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    header {
+      background: var(--ink);
+      color: #fff;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { font-size: 1.1rem; font-weight: 600; letter-spacing: -.3px; }
+    header a { color: #aaa; font-size: .85rem; text-decoration: none; }
+    header a:hover { color: #fff; }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+    h2 { font-size: .8rem; font-weight: 600; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 14px; margin-top: 36px; }
+    h2:first-of-type { margin-top: 0; }
+
+    /* Stat grid */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      box-shadow: var(--shadow);
+    }
+    .stat-card .label { font-size: .76rem; color: var(--ink-soft); margin-bottom: 6px; }
+    .stat-card .value { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .stat-card.blue   .value { color: var(--blue); }
+    .stat-card.green  .value { color: var(--green); }
+    .stat-card.amber  .value { color: var(--amber); }
+    .stat-card.red    .value { color: var(--red); }
+    .stat-card.violet .value { color: var(--violet); }
+    .stat-card.ink    .value { color: var(--ink); }
+
+    /* Hoy banner */
+    .hoy-banner {
+      background: var(--ink);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 20px 28px;
+      display: flex;
+      gap: 36px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .hoy-item .hoy-label { font-size: .76rem; opacity: .55; margin-bottom: 4px; }
+    .hoy-item .hoy-val   { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+
+    /* Tabla */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    thead { background: var(--bg); }
+    th { padding: 11px 14px; text-align: left; font-weight: 600; font-size: .75rem; color: var(--ink-soft); border-bottom: 1px solid var(--border); }
+    td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafaf8; }
+
+    .msg-preview { max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-soft); font-size: .82rem; }
+    .dup-note    { font-size: .72rem; color: var(--violet); margin-top: 2px; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: .73rem; font-weight: 600; white-space: nowrap; }
+    .badge-pending    { background: #FEF3C7; color: #92400E; }
+    .badge-approved   { background: #D1FAE5; color: #065F46; }
+    .badge-rejected   { background: #FEE2E2; color: #991B1B; }
+    .badge-duplicated { background: #EDE9FE; color: #5B21B6; }
+    .badge-spam       { background: #FCE7F3; color: #9D174D; }
+    .badge-incomplete { background: #FEF9C3; color: #713F12; }
+
+    .thumb  { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; }
+    .no-img { width: 44px; height: 44px; background: var(--bg); border-radius: 6px; display:flex; align-items:center; justify-content:center; font-size:.65rem; color:var(--ink-soft); }
+
+    .job-ok   { font-size: .72rem; color: var(--green); margin-top: 3px; }
+    .admin-lk { font-size: .78rem; color: var(--blue); text-decoration: none; }
+    .admin-lk:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ WorkFinder — Dashboard</h1>
+  <div style="display:flex;gap:24px;align-items:center;">
+    <span style="opacity:.5;font-size:.82rem;">{{ hoy }}</span>
+    <a href="/admin/">Admin →</a>
+    <a href="/">Sitio →</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HOY -->
+  <h2>Actividad de hoy</h2>
+  <div class="hoy-banner">
+    <div class="hoy-item">
+      <div class="hoy-label">Recibidas</div>
+      <div class="hoy-val">{{ hoy_total }}</div>
+    </div>
+    <div class="hoy-item">
+      <div class="hoy-label">Jobs creados ✓</div>
+      <div class="hoy-val" style="color:#4ADE80;">{{ hoy_procesados }}</div>
+    </div>
+    <div class="hoy-item">
+      <div class="hoy-label">Duplicadas</div>
+      <div class="hoy-val" style="color:#A78BFA;">{{ hoy_duplicados }}</div>
+    </div>
+    <div class="hoy-item">
+      <div class="hoy-label">Incompletas</div>
+      <div class="hoy-val" style="color:#FCD34D;">{{ hoy_incompletos }}</div>
+    </div>
+    <div class="hoy-item">
+      <div class="hoy-label">Pendientes revisión</div>
+      <div class="hoy-val" style="color:#FB923C;">{{ hoy_pendientes }}</div>
+    </div>
+  </div>
+
+  <!-- INCOMING HISTÓRICO -->
+  <h2>Ofertas entrantes — total histórico</h2>
+  <div class="stat-grid">
+    <div class="stat-card ink">
+      <div class="label">Total recibidas</div>
+      <div class="value">{{ total_incoming }}</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="label">Pendientes</div>
+      <div class="value">{{ pending }}</div>
+    </div>
+    <div class="stat-card green">
+      <div class="label">Aprobadas</div>
+      <div class="value">{{ approved }}</div>
+    </div>
+    <div class="stat-card red">
+      <div class="label">Rechazadas</div>
+      <div class="value">{{ rejected }}</div>
+    </div>
+    <div class="stat-card violet">
+      <div class="label">Duplicadas</div>
+      <div class="value">{{ duplicated }}</div>
+    </div>
+    <div class="stat-card red">
+      <div class="label">Spam</div>
+      <div class="value">{{ spam }}</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="label">Incompletas</div>
+      <div class="value">{{ incomplete }}</div>
+    </div>
+  </div>
+
+  <!-- JOBS PUBLICADOS -->
+  <h2>Ofertas publicadas (Jobs)</h2>
+  <div class="stat-grid">
+    <div class="stat-card green">
+      <div class="label">Visibles en el sitio</div>
+      <div class="value">{{ jobs_aprobados }}</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="label">Pendientes</div>
+      <div class="value">{{ jobs_pendientes }}</div>
+    </div>
+    <div class="stat-card red">
+      <div class="label">Rechazadas</div>
+      <div class="value">{{ jobs_rechazados }}</div>
+    </div>
+  </div>
+
+  <!-- TABLA RECIENTE -->
+  <h2>Últimas 20 ofertas entrantes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Img</th>
+          <th>Mensaje</th>
+          <th>Estado</th>
+          <th>Fuente</th>
+          <th>Recibida</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in recientes %}
+        <tr>
+          <td>
+            {% if item.image %}
+              <img class="thumb" src="{{ item.image.url }}" alt="">
+            {% else %}
+              <div class="no-img">sin img</div>
+            {% endif %}
+          </td>
+          <td>
+            <div class="msg-preview">{{ item.raw_message }}</div>
+            {% if item.duplicate_of %}
+              <div class="dup-note">↳ duplicado de #{{ item.duplicate_of.pk }}</div>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge badge-{{ item.status }}">{{ item.get_status_display }}</span>
+            {% if item.job_created %}<div class="job-ok">✓ Job creado</div>{% endif %}
+          </td>
+          <td style="font-size:.82rem;">{{ item.source }}</td>
+          <td style="font-size:.8rem;color:var(--ink-soft);white-space:nowrap;">{{ item.created_at|date:"d/m/Y H:i" }}</td>
+          <td><a class="admin-lk" href="/admin/automation/incomingjob/{{ item.pk }}/change/">Editar</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--ink-soft);">No hay ofertas aún.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</main>
+</body>
+</html>

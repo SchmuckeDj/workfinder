@@ -47,18 +47,19 @@ class IncomingJobAdmin(admin.ModelAdmin):
             and not obj.job_created
         ):
             try:
-                create_job_from_incoming(obj)
-                obj.job_created = True
-
-                self.message_user(
-                    request,
-                    "La oferta fue procesada y creada correctamente."
-                )
+                job = create_job_from_incoming(obj)
+                if job:
+                    self.message_user(request, f'Oferta creada: "{job.title}" en {job.company}.')
+                elif obj.status == IncomingJob.Status.DUPLICATED:
+                    self.message_user(request, f'Duplicado detectado — no se creó oferta.', level='WARNING')
+                else:
+                    self.message_user(request, f'Oferta incompleta — no se creó (estado: {obj.status}).', level='WARNING')
 
             except Exception as e:
                 self.message_user(
                     request,
-                    f"Error procesando la oferta: {e}"
+                    f"Error procesando la oferta: {e}",
+                    level='ERROR',
                 )
 
         super().save_model(request, obj, form, change)
