@@ -2,7 +2,7 @@ import logging
 from django.views.generic import ListView, DetailView, FormView
 from django.contrib import messages
 from django.urls import reverse_lazy
-from .models import Job, Subscriber
+from .models import Job, Subscriber, Recurso, Articulo
 from .forms import SubscriberForm
 from .email_service import send_welcome_email
 
@@ -19,6 +19,7 @@ class HomeView(FormView):
         approved_jobs = list(Job.objects.filter(status=Job.Status.APPROVED)[:6])
         context['jobs'] = approved_jobs
         context['jobs_count'] = len(approved_jobs)
+        context['articulos_preview'] = Articulo.objects.filter(is_active=True)[:2]
         return context
 
     def form_valid(self, form):
@@ -33,8 +34,6 @@ class HomeView(FormView):
             return super().form_valid(self)
 
         subscriber = form.save()
-
-        # Enviamos email con las 3 ofertas más recientes aprobadas
         top_jobs = list(Job.objects.filter(status=Job.Status.APPROVED)[:3])
         send_welcome_email(subscriber, top_jobs)
 
@@ -66,3 +65,37 @@ class JobDetailView(DetailView):
 
     def get_queryset(self):
         return Job.objects.filter(status=Job.Status.APPROVED)
+
+
+class RecursoListView(ListView):
+    model = Recurso
+    template_name = 'core/recursos.html'
+    context_object_name = 'recursos'
+
+    def get_queryset(self):
+        return Recurso.objects.filter(is_active=True)
+
+
+class ArticuloListView(ListView):
+    model = Articulo
+    template_name = 'core/blog.html'
+    context_object_name = 'articulos'
+
+    def get_queryset(self):
+        return Articulo.objects.filter(is_active=True)
+
+
+class ArticuloDetailView(DetailView):
+    model = Articulo
+    template_name = 'core/articulo_detail.html'
+    context_object_name = 'articulo'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
+
+    def get_queryset(self):
+        return Articulo.objects.filter(is_active=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['related'] = Articulo.objects.filter(is_active=True).exclude(pk=self.object.pk)[:5]
+        return context

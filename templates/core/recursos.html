@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Todos los recursos | WorkFinder{% endblock %}
+
+{% block content %}
+
+<section class="detail-hero">
+    <div class="container">
+        <nav class="breadcrumb" aria-label="Navegación">
+            <a href="{% url 'home' %}">Inicio</a>
+            <span class="breadcrumb-sep">›</span>
+            <span>Recursos</span>
+        </nav>
+        <div class="afiliados-eyebrow">⭐ Recomendados</div>
+        <h1 class="section-title">Cursos y herramientas</h1>
+        <p class="section-sub" style="margin-top:0.5rem">
+            {% if recursos|length == 1 %}
+                1 recurso disponible
+            {% else %}
+                {{ recursos|length }} recursos disponibles
+            {% endif %}
+        </p>
+    </div>
+</section>
+
+<section class="afiliados-section">
+    <div class="container">
+
+        {% if recursos %}
+        <div class="hcarousel-track" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem; transform:none;">
+            {% for r in recursos %}
+            <a class="acard" href="{{ r.url }}" target="_blank" rel="noopener sponsored">
+                <div class="acard-img-placeholder" style="padding:0; overflow:hidden;">
+                    {% if r.image %}<img src="{{ r.image.url }}" alt="{{ r.title }}" style="width:100%; height:100%; object-fit:cover; display:block;" loading="lazy">{% endif %}
+                </div>
+                <div class="acard-body">
+                    <span class="acard-badge acard-badge-{{ r.tipo }}">{{ r.get_tipo_display }}</span>
+                    <p class="acard-title">{{ r.title }}</p>
+                    <p class="acard-desc">{{ r.description }}</p>
+                    <div class="acard-footer">
+                        <div>
+                            {% if r.price %}<p class="acard-price">{{ r.price }}</p>{% endif %}
+                            {% if r.price_old %}<p class="acard-price-old">{{ r.price_old }}</p>{% endif %}
+                        </div>
+                        <span class="acard-btn">{{ r.cta_label }}</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📚</div>
+            <h3>Aún no hay recursos publicados</h3>
+            <p>Vuelve pronto, estamos seleccionando los mejores cursos y herramientas para ti.</p>
+            <a href="{% url 'home' %}" class="btn btn-blue">Volver al inicio</a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

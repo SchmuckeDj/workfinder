@@ -1,0 +1,189 @@
+{
+  "name": "WorkFinder — WhatsApp → Django",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "name": "WhatsApp Trigger",
+      "type": "n8n-nodes-base.whatsappTrigger",
+      "typeVersion": 1,
+      "position": [80, 200],
+      "webhookId": "workfinder-whatsapp"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": false},
+          "conditions": [
+            {
+              "id": "has-image",
+              "leftValue": "={{ $json.messages[0].type }}",
+              "rightValue": "image",
+              "operator": {"type": "string", "operation": "equals"}
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "name": "¿Tiene imagen?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [300, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.messages[0].image.link }}",
+        "options": {
+          "response": {"response": {"responseFormat": "file"}}
+        }
+      },
+      "name": "Descargar imagen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [300, 60],
+      "notes": "Descarga el binario de la imagen desde la URL de WhatsApp"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "name": "Unir imagen + texto",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [520, 140]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.DJANGO_BASE_URL }}/api/incoming-job/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.AUTOMATION_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "raw_text",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].text?.body ?? '' }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].image?.caption ?? '' }}"
+            },
+            {
+              "name": "source",
+              "value": "=whatsapp-{{ $('WhatsApp Trigger').item.json.metadata?.display_phone_number ?? 'grupo' }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "POST Django (con imagen)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [740, 60]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $vars.DJANGO_BASE_URL }}/api/incoming-job/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $vars.AUTOMATION_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "raw_text",
+              "value": "={{ $json.messages[0].text?.body ?? '' }}"
+            },
+            {
+              "name": "source",
+              "value": "=whatsapp-{{ $json.metadata?.display_phone_number ?? 'grupo' }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "POST Django (solo texto)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [520, 340]
+    }
+  ],
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [[{"node": "¿Tiene imagen?", "type": "main", "index": 0}]]
+    },
+    "¿Tiene imagen?": {
+      "main": [
+        [{"node": "Descargar imagen", "type": "main", "index": 0}],
+        [{"node": "POST Django (solo texto)", "type": "main", "index": 0}]
+      ]
+    },
+    "Descargar imagen": {
+      "main": [[{"node": "Unir imagen + texto", "type": "main", "index": 0}]]
+    },
+    "¿Tiene imagen?": {
+      "main": [
+        [{"node": "Descargar imagen", "type": "main", "index": 0}],
+        [{"node": "POST Django (solo texto)", "type": "main", "index": 0}]
+      ]
+    },
+    "Unir imagen + texto": {
+      "main": [[{"node": "POST Django (con imagen)", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "variables": {},
+  "_notes": {
+    "variables_necesarias": {
+      "DJANGO_BASE_URL": "URL pública de tu Django, ej: https://tudominio.com",
+      "AUTOMATION_API_TOKEN": "El mismo token que tienes en el .env de Django"
+    },
+    "setup": [
+      "1. Importa este JSON en n8n (File → Import from file)",
+      "2. En n8n: Settings → Variables, crea DJANGO_BASE_URL y AUTOMATION_API_TOKEN",
+      "3. Configura la credencial 'WhatsApp Business' con tu token de Meta",
+      "4. Activa el workflow",
+      "5. En Meta for Developers, pon la URL del webhook de n8n como callback"
+    ],
+    "limitaciones": [
+      "n8n-nodes-base.whatsappTrigger requiere WhatsApp Business API (Meta)",
+      "Si usas WhatsApp personal/grupos no-business, necesitas un nodo de Evolution API o WPPConnect en lugar del trigger oficial",
+      "Evolution API es la opción más usada para grupos de WhatsApp informales en RD"
+    ]
+  }
+}

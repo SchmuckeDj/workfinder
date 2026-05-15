@@ -1,0 +1,200 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Blog & recursos | WorkFinder{% endblock %}
+
+{% block content %}
+
+<section class="detail-hero">
+    <div class="container">
+        <nav class="breadcrumb" aria-label="Navegación">
+            <a href="{% url 'home' %}">Inicio</a>
+            <span class="breadcrumb-sep">›</span>
+            <span>Blog</span>
+        </nav>
+        <div class="blog-eyebrow">
+            <span class="blog-eyebrow-glow"></span>
+            📝 Blog &amp; recursos
+        </div>
+        <h1 class="section-title blog-title">Aprende, crece y postúlate mejor</h1>
+        <p class="section-sub" style="margin-top:0.5rem">
+            <span id="blog-count">{{ articulos|length }}</span> artículo{% if articulos|length != 1 %}s{% endif %} disponible{% if articulos|length != 1 %}s{% endif %}
+        </p>
+    </div>
+</section>
+
+<section style="padding:var(--space-10) 0 var(--space-20);background:var(--color-surface);">
+    <div class="container">
+
+        {% if articulos %}
+
+        {# Filtros por categoría #}
+        <div class="bl-filters" id="blog-filters">
+            <button class="bl-filter-btn active" data-cat="all">Todos</button>
+            {% regroup articulos by category as cat_list %}
+            {% for cat in cat_list %}
+            <button class="bl-filter-btn" data-cat="{{ cat.grouper }}">{{ cat.grouper }}</button>
+            {% endfor %}
+        </div>
+
+        {# Grid de artículos #}
+        <div class="bl-grid" id="blog-grid">
+            {% for a in articulos %}
+            <article class="bl-card" data-cat="{{ a.category }}">
+                <a href="{{ a.get_absolute_url }}" class="bl-card-img-wrap">
+                    {% if a.image %}
+                    <img src="{{ a.image.url }}" alt="{{ a.title }}" loading="lazy" class="bl-card-img">
+                    {% else %}
+                    <div class="bl-card-img-placeholder">📝</div>
+                    {% endif %}
+                    <span class="bl-card-badge">{{ a.badge }}</span>
+                </a>
+                <div class="bl-card-body">
+                    <div class="bl-card-meta">
+                        <span class="bl-card-cat">{{ a.category }}</span>
+                        <span class="bl-card-sep">·</span>
+                        <span class="bl-card-time">{{ a.read_time }}</span>
+                    </div>
+                    <h3 class="bl-card-title">
+                        <a href="{{ a.get_absolute_url }}">{{ a.title }}</a>
+                    </h3>
+                    <p class="bl-card-desc">{{ a.description }}</p>
+                    <a href="{{ a.get_absolute_url }}" class="bl-card-btn">
+                        Leer artículo
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 8H13M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <p id="blog-empty" style="display:none;text-align:center;padding:3rem;color:var(--color-ink-muted);">
+            No hay artículos en esta categoría aún.
+        </p>
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <h3>Aún no hay artículos publicados</h3>
+            <p>Estamos preparando contenido para impulsar tu carrera profesional.</p>
+            <a href="{% url 'home' %}" class="btn btn-blue">Volver al inicio</a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% include "core/partials/_subscribe.html" %}
+
+<style>
+/* Filtros */
+.bl-filters {
+    display: flex; flex-wrap: wrap; gap: .5rem;
+    margin-bottom: 2rem;
+}
+.bl-filter-btn {
+    padding: .4rem 1.1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-border-2);
+    background: transparent;
+    color: var(--color-ink-muted);
+    font-family: var(--font-body);
+    font-size: .82rem; font-weight: 600;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+}
+.bl-filter-btn:hover { border-color: var(--color-ink); color: var(--color-ink); }
+.bl-filter-btn.active { background: var(--color-ink); color: #fff; border-color: var(--color-ink); }
+
+/* Grid 3 columnas */
+.bl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+}
+@media (max-width: 1023px) { .bl-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .bl-grid { grid-template-columns: 1fr; } }
+
+/* Card */
+.bl-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform .25s, box-shadow .25s;
+}
+.bl-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,.09); }
+
+.bl-card-img-wrap {
+    display: block;
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: var(--color-bg);
+    text-decoration: none;
+}
+.bl-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.bl-card:hover .bl-card-img { transform: scale(1.04); }
+.bl-card-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--color-blue-dim), var(--color-green-dim));
+}
+.bl-card-badge {
+    position: absolute; top: .75rem; left: .75rem;
+    background: var(--color-ink); color: white;
+    font-size: .65rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px;
+    letter-spacing: .05em; text-transform: uppercase;
+}
+
+.bl-card-body { padding: 1.25rem; display: flex; flex-direction: column; gap: .6rem; flex: 1; }
+.bl-card-meta { display: flex; align-items: center; gap: .4rem; font-size: .72rem; }
+.bl-card-cat { color: var(--color-violet); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.bl-card-sep { color: var(--color-ink-ghost); }
+.bl-card-time { color: var(--color-ink-ghost); }
+.bl-card-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-ink); line-height: 1.25; letter-spacing: -.02em; }
+.bl-card-title a { color: inherit; text-decoration: none; }
+.bl-card-title a:hover { color: var(--color-blue); }
+.bl-card-desc { font-size: .83rem; color: var(--color-ink-muted); line-height: 1.65; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.bl-card-btn {
+    display: inline-flex; align-items: center; gap: .4rem;
+    width: fit-content; margin-top: .25rem;
+    background: var(--color-ink); color: white;
+    font-size: .78rem; font-weight: 600;
+    padding: .5rem 1.1rem; border-radius: 999px;
+    text-decoration: none;
+    transition: background .2s, transform .2s;
+}
+.bl-card-btn:hover { background: var(--color-blue); transform: translateY(-1px); color: white; }
+</style>
+
+<script>
+(function () {
+    const btns  = document.querySelectorAll('.bl-filter-btn');
+    const cards = document.querySelectorAll('#blog-grid .bl-card');
+    const count = document.getElementById('blog-count');
+    const empty = document.getElementById('blog-empty');
+
+    btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cat = btn.dataset.cat;
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            let visible = 0;
+            cards.forEach(card => {
+                const show = cat === 'all' || card.dataset.cat === cat;
+                card.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            count.textContent = visible;
+            empty.style.display = visible === 0 ? 'block' : 'none';
+        });
+    });
+})();
+</script>
+
+{% endblock %}

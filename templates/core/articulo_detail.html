@@ -1,0 +1,105 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ articulo.title }} | WorkFinder{% endblock %}
+
+{% block content %}
+
+{% if not articulo.content and articulo.url %}
+{# Sin contenido interno → redirect inmediato al URL externo #}
+<meta http-equiv="refresh" content="0; url={{ articulo.url }}">
+<script>window.location.href = "{{ articulo.url }}";</script>
+<section class="detail-hero">
+    <div class="container" style="text-align:center;padding:4rem 0;">
+        <p style="color:var(--color-ink-muted);margin-bottom:1rem;">Redirigiendo al artículo...</p>
+        <a href="{{ articulo.url }}" class="btn btn-blue" target="_blank" rel="noopener">Ir al artículo →</a>
+    </div>
+</section>
+
+{% else %}
+
+<section class="detail-hero">
+    <div class="container">
+        <nav class="breadcrumb" aria-label="Navegación">
+            <a href="{% url 'home' %}">Inicio</a>
+            <span class="breadcrumb-sep">›</span>
+            <a href="{% url 'blog' %}">Blog</a>
+            <span class="breadcrumb-sep">›</span>
+            <span>{{ articulo.title }}</span>
+        </nav>
+        <div class="blog-eyebrow">
+            <span class="blog-eyebrow-glow"></span>
+            {{ articulo.category }}
+        </div>
+        <h1 class="section-title blog-title">{{ articulo.title }}</h1>
+        <p class="section-sub" style="margin-top:0.5rem">
+            <span class="blog-card-badge" style="position:static;display:inline-block;margin-right:.5rem">{{ articulo.badge }}</span>
+            {{ articulo.read_time }}
+        </p>
+    </div>
+</section>
+
+<section class="blog-section">
+    <div class="container">
+        <div class="articulo-layout">
+
+            <article class="articulo-body">
+                {% if articulo.image %}
+                <img src="{{ articulo.image.url }}" alt="{{ articulo.title }}" class="articulo-cover" loading="lazy">
+                {% endif %}
+
+                <p class="articulo-desc">{{ articulo.description }}</p>
+
+                {% if articulo.content %}
+                <div class="articulo-content">
+                    {{ articulo.content|safe }}
+                </div>
+                {% endif %}
+
+                {% if articulo.url %}
+                <div style="margin-top:2rem">
+                    <a href="{{ articulo.url }}" class="btn btn-blue" target="_blank" rel="noopener">
+                        Ver recurso externo →
+                    </a>
+                </div>
+                {% endif %}
+            </article>
+
+            <aside class="articulo-sidebar">
+                <div class="sidebar-card">
+                    <h3 style="font-size:1rem;font-weight:600;margin-bottom:1rem">Más artículos</h3>
+                    {% for a in related %}
+                    <a href="{{ a.get_absolute_url }}" class="articulo-related-link">
+                        <span class="articulo-related-cat">{{ a.category }}</span>
+                        <span class="articulo-related-title">{{ a.title }}</span>
+                    </a>
+                    {% empty %}
+                    <p style="color:var(--color-ink-muted);font-size:.875rem">Próximamente más artículos.</p>
+                    {% endfor %}
+                </div>
+            </aside>
+
+        </div>
+    </div>
+</section>
+
+{% endif %}
+
+<style>
+.articulo-layout { display: grid; grid-template-columns: 1fr 280px; gap: 2.5rem; align-items: start; }
+.articulo-cover { width: 100%; border-radius: 12px; margin-bottom: 1.5rem; object-fit: cover; max-height: 400px; }
+.articulo-desc { font-size: 1.125rem; line-height: 1.7; color: var(--color-ink); margin-bottom: 2rem; font-weight: 500; }
+.articulo-content { font-size: 1rem; line-height: 1.8; color: var(--color-ink); }
+.articulo-content h2 { font-family: Syne, sans-serif; font-size: 1.4rem; margin: 2rem 0 .75rem; }
+.articulo-content h3 { font-family: Syne, sans-serif; font-size: 1.15rem; margin: 1.5rem 0 .5rem; }
+.articulo-content p  { margin-bottom: 1rem; }
+.articulo-content ul, .articulo-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+.articulo-content li { margin-bottom: .4rem; }
+.articulo-related-link { display: flex; flex-direction: column; gap: .2rem; padding: .75rem 0; border-bottom: 1px solid #eee; text-decoration: none; color: inherit; }
+.articulo-related-link:last-child { border-bottom: none; }
+.articulo-related-cat  { font-size: .75rem; color: var(--color-blue); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.articulo-related-title { font-size: .9rem; font-weight: 500; }
+.articulo-related-link:hover .articulo-related-title { color: var(--color-blue); }
+@media (max-width: 767px) { .articulo-layout { grid-template-columns: 1fr; } .articulo-sidebar { order: -1; } }
+</style>
+
+{% endblock %}

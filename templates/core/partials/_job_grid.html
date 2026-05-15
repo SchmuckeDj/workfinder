@@ -1,9 +1,9 @@
 <!-- =====================================================
      PARTIAL: _job_grid.html
-     Grid de ofertas con estado vacío.
-     Recibe: jobs (lista), job_list url
+     SECTION 2 — Grid de ofertas con botón CTA al final.
 ===================================================== -->
 <div class="jobs-main">
+
     <div class="section-header">
         <div>
             <h2 class="section-title">Ofertas disponibles</h2>
@@ -33,16 +33,28 @@
                         <span class="meta-dot"></span>{{ job.location }}
                     </span>
                     {% if job.salary %}
-                    <span class="job-meta-item">
+                    <span class="job-meta-item job-salary">
                         <span class="meta-dot"></span>{{ job.salary }}
                     </span>
                     {% endif %}
                 </div>
-                <a href="{% url 'job_detail' job.pk %}" class="btn-card-link" aria-label="Ver oferta">→</a>
+                <a href="{% url 'job_detail' job.pk %}" class="btn-card-link" aria-label="Ver oferta">
+                    <span>Ver oferta</span>
+                </a>
             </div>
 
         </article>
         {% endfor %}
+    </div>
+
+    <!-- CTA section 2 -->
+    <div class="section-cta">
+        <a href="{% url 'job_list' %}" class="btn-neon">
+            <span>Ver todas las ofertas</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8H13M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
     </div>
 
     {% else %}
@@ -55,4 +67,5 @@
         </div>
     </div>
     {% endif %}
+
 </div>

@@ -1,0 +1,85 @@
+{% load static %}
+<section class="blog-section" id="blog">
+    <div class="container">
+
+        <div class="blog-header">
+            <div class="blog-eyebrow">
+                <span class="blog-eyebrow-glow"></span>
+                📝 Blog &amp; recursos
+            </div>
+            <h2 class="section-title blog-title">Aprende, crece y postúlate mejor</h2>
+            <p class="section-sub">Artículos seleccionados para impulsar tu carrera profesional</p>
+        </div>
+
+        <div class="blog-grid">
+
+            <!-- Card IZQUIERDA -->
+            <article class="blog-card blog-card-left">
+                <div class="blog-card-image">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80"
+                         alt="Persona trabajando en un portátil"
+                         loading="lazy">
+                    <span class="blog-card-badge blog-card-badge-left">Guía</span>
+                </div>
+                <div class="blog-card-body">
+                    <div class="blog-card-meta">
+                        <span class="blog-card-category">Entrevistas</span>
+                        <span class="blog-card-dot"></span>
+                        <span class="blog-card-time">8 min lectura</span>
+                    </div>
+                    <h3 class="blog-card-title">Cómo prepararte para una entrevista técnica en 7 días</h3>
+                    <p class="blog-card-desc">
+                        Guía práctica con ejercicios, preguntas frecuentes y estrategias
+                        comprobadas para destacar frente al reclutador. Incluye plantillas
+                        descargables y casos reales.
+                    </p>
+                    <a href="https://es.indeed.com/orientacion-laboral/entrevistas/como-prepararse-para-una-entrevista-de-trabajo"
+                       class="blog-card-btn" target="_blank" rel="noopener">
+                        Leer artículo
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 8H13M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Card DERECHA -->
+            <article class="blog-card blog-card-right">
+                <div class="blog-card-image">
+                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80"
+                         alt="Equipo colaborando en oficina moderna"
+                         loading="lazy">
+                    <span class="blog-card-badge blog-card-badge-right">Carrera</span>
+                </div>
+                <div class="blog-card-body">
+                    <div class="blog-card-meta">
+                        <span class="blog-card-category">Salario</span>
+                        <span class="blog-card-dot"></span>
+                        <span class="blog-card-time">6 min lectura</span>
+                    </div>
+                    <h3 class="blog-card-title">Negocia tu salario sin miedo: tácticas que funcionan</h3>
+                    <p class="blog-card-desc">
+                        Aprende a calcular tu valor real en el mercado, argumentar con datos
+                        y cerrar una oferta sin incomodidad. Scripts de conversación listos
+                        para usar en tu próxima entrevista.
+                    </p>
+                    <a href="https://finiquitojusto.com/derechos-laborales/guia-salario-minimo-republica-dominicana-2025/"
+                       class="blog-card-btn" target="_blank" rel="noopener">
+                        Leer artículo
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 8H13M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+        </div>
+
+        <div class="blog-cta-all">
+            <a href="{% url 'blog' %}" class="btn btn-outline-neon">
+                Ver todos los artículos →
+            </a>
+        </div>
+
+    </div>
+</section>
