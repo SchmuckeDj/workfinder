@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,6 +24,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -51,12 +53,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Base de datos — PostgreSQL en producción, SQLite en desarrollo
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 LANGUAGE_CODE = 'es-es'
 TIME_ZONE = os.getenv('TIME_ZONE', 'America/Santo_Domingo')
@@ -65,8 +72,12 @@ USE_TZ = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MESSAGE_TAGS = {
@@ -74,15 +85,12 @@ MESSAGE_TAGS = {
 }
 
 # ── APIs ──
-ANTHROPIC_API_KEY    = os.getenv('ANTHROPIC_API_KEY')
+ANTHROPIC_API_KEY    = os.getenv('ANTHROPIC_API_KEY', '')
 TESSERACT_CMD        = os.getenv('TESSERACT_CMD', 'tesseract')
 AUTOMATION_API_TOKEN = os.getenv('AUTOMATION_API_TOKEN', '')
 
 # ── Email ──
-# En desarrollo usa ConsoleBackend para ver emails en terminal.
-# En producción cambia a smtp y rellena las variables en .env
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-
+EMAIL_BACKEND       = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST          = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT          = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS       = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
