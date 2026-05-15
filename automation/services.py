@@ -118,21 +118,40 @@ def validate_parsed(parsed):
 
 def _basic_parser(text):
     """Extrae campos mínimos con regex cuando Claude no está disponible."""
-    lines = [l.strip() for l in text.splitlines() if l.strip()]
+    NOISE = {"Premium", "Confidencial", "•", "·", "–", "—"}
 
-    title = lines[0] if lines else "Vacante"
+    # Extraer URL antes de limpiar
+    url_match = re.search(r'https?://[^\s]+', text)
+    application_link = url_match.group(0) if url_match else ""
+
+    # Limpiar líneas: quitar ruido, línea URL, bullets vacíos
+    lines = []
+    for l in text.splitlines():
+        l = l.strip()
+        if not l or l.startswith("URL:"):
+            continue
+        if l in NOISE:
+            continue
+        for w in NOISE:
+            l = l.replace(w, "").strip()
+        if len(l) < 2:
+            continue
+        lines.append(l)
+
+    title   = lines[0] if lines else "Vacante"
     company = lines[1] if len(lines) > 1 else "Empresa no especificada"
-
-    # Limpiar palabras genéricas de título
-    for word in ("Premium", "Confidencial"):
-        company = company.replace(word, "").strip()
-    if not company:
+    if not company or len(company) < 2:
         company = "Empresa no especificada"
 
-    email_match = re.search(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}', text)
-    phone_match = re.search(r'(\+?1?\s?)?(\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})', text)
-    url_match = re.search(r'https?://[^\s]+', text)
+    description = "\n".join(lines[2:]) if len(lines) > 2 else ""
+
+    email_match  = re.search(r'[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}', text)
+    phone_match  = re.search(r'(\+?1?\s?)?(\(?\d{3}\)?[\s\-\.]?\d{3}[\s\-\.]?\d{4})', text)
     salary_match = re.search(r'RD?\$[\s\d,\.]+|[\d,\.]+\s*(pesos|dólares|USD)', text, re.IGNORECASE)
+    loc_match    = re.search(
+        r'(Santo Domingo|Santiago|La Romana|San Pedro|Punta Cana|Puerto Plata|Higüey|Bavaro|Bávaro)[^\n,]*',
+        text, re.IGNORECASE
+    )
 
     modality = "presencial"
     if re.search(r'\bremoto\b|\bremote\b|\bwork from home\b', text, re.IGNORECASE):
@@ -141,19 +160,19 @@ def _basic_parser(text):
         modality = "hibrido"
 
     parsed = {
-        "title": title[:200],
-        "company": company[:200],
-        "description": text[:1000],
-        "location": "República Dominicana",
-        "salary": salary_match.group(0) if salary_match else "",
-        "modality": modality,
-        "email": email_match.group(0) if email_match else "",
-        "phone": phone_match.group(0) if phone_match else "",
-        "requirements": "",
-        "benefits": "",
-        "experience": "",
-        "schedule": "",
-        "application_link": url_match.group(0) if url_match else "",
+        "title":            title[:200],
+        "company":          company[:200],
+        "description":      description[:1500] or text[:500],
+        "location":         loc_match.group(0).strip()[:200] if loc_match else "República Dominicana",
+        "salary":           salary_match.group(0) if salary_match else "",
+        "modality":         modality,
+        "email":            email_match.group(0) if email_match else "",
+        "phone":            phone_match.group(0) if phone_match else "",
+        "requirements":     "",
+        "benefits":         "",
+        "experience":       "",
+        "schedule":         "",
+        "application_link": application_link,
     }
 
     parsed, _ = validate_parsed(parsed)
@@ -222,15 +241,15 @@ TEXTO:
 INSTRUCCIONES:
 - Devuelve ÚNICAMENTE un JSON válido, sin backticks, sin texto adicional.
 - No inventes datos. Si un campo no existe en el texto, usa "".
-- Para "company": busca el nombre del negocio/empresa/empleador. Si dice "se busca" o "se necesita", eso NO es el nombre de la empresa.
-- Para "salary": incluye el número y moneda (ej: "RD$25,000 mensual"). Si solo dice "a convenir", usa "".
-- Para "phone": extrae el número dominicano completo (ej: "809-555-1234"). Solo dígitos reales.
+- Para "company": busca el nombre del negocio/empresa/empleador.
+- Para "salary": incluye el número y moneda (ej: "RD$25,000 mensual").
+- Para "phone": extrae el número dominicano completo (ej: "809-555-1234").
 - Para "email": solo si hay un email claramente escrito en el texto.
 - Para "experience": años o nivel (ej: "2 años", "no requerida").
 - Para "requirements": lista los requisitos separados por coma o punto y coma.
-- Para "application_link": URL completa si dicen "aplica en", "envía CV a", "formulario en", etc.
-- Para "modality": solo "presencial", "remoto" o "hibrido". Infiere del contexto si no lo dice.
-- Limpia errores de OCR obvios (letras cambiadas, palabras cortadas).
+- Para "application_link": URL completa si existe en el texto.
+- Para "modality": solo "presencial", "remoto" o "hibrido".
+- Limpia errores de OCR obvios.
 
 Formato exacto:
 {{
@@ -314,10 +333,7 @@ def create_job_from_incoming(incoming_job):
         incoming_job.status = IncomingJob.Status.DUPLICATED
         incoming_job.duplicate_of = duplicate
         incoming_job.save(update_fields=["status", "duplicate_of"])
-        logger.info(
-            "IncomingJob #%s marcado como duplicado de #%s",
-            incoming_job.pk, duplicate.pk
-        )
+        logger.info("IncomingJob #%s marcado como duplicado de #%s", incoming_job.pk, duplicate.pk)
         return None
 
     if parsed["title"] == "Vacante" and parsed["company"] == "Empresa no especificada":
@@ -352,21 +368,3 @@ def create_job_from_incoming(incoming_job):
 
     logger.info("Job #%s creado desde IncomingJob #%s", job.pk, incoming_job.pk)
     return job
-
-
-def _default_parsed():
-    return {
-        "title": "Vacante",
-        "company": "Empresa no especificada",
-        "description": "",
-        "location": "No especificado",
-        "salary": "",
-        "modality": "presencial",
-        "email": "",
-        "phone": "",
-        "requirements": "",
-        "benefits": "",
-        "experience": "",
-        "schedule": "",
-        "application_link": "",
-    }

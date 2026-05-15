@@ -4,7 +4,6 @@
 
 {% block content %}
 
-<!-- DETAIL HERO -->
 <section class="detail-hero">
     <div class="container">
 
@@ -17,9 +16,7 @@
         </nav>
 
         <div class="detail-header">
-            <div class="detail-company-logo">
-                {{ job.company|slice:":2"|upper }}
-            </div>
+            <div class="detail-company-logo">{{ job.company|slice:":2"|upper }}</div>
             <div class="detail-title-group">
                 <h1 class="detail-title">{{ job.title }}</h1>
                 <p class="detail-company">{{ job.company }}</p>
@@ -36,12 +33,10 @@
     </div>
 </section>
 
-<!-- DETAIL BODY -->
 <section class="detail-section">
     <div class="container">
         <div class="detail-layout">
 
-            <!-- Contenido principal -->
             <div class="detail-main">
                 <div class="detail-card">
                     <div class="detail-card-section">
@@ -64,14 +59,33 @@
                     {% endif %}
                 </div>
 
-                <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
+                <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
                     <a href="{% url 'job_list' %}" class="btn btn-outline">← Volver a ofertas</a>
+                    {% if job.application_link %}
+                    <a href="{{ job.application_link }}" class="btn btn-blue" target="_blank" rel="noopener">Aplicar a esta oferta →</a>
+                    {% elif job.email %}
+                    <a href="mailto:{{ job.email }}" class="btn btn-blue">Aplicar por email →</a>
+                    {% endif %}
                     <a href="#section-recursos-detail" class="btn btn-neon">Ver recursos relacionados ↓</a>
                 </div>
             </div>
 
-            <!-- Sidebar derecho -->
             <aside class="detail-sidebar">
+
+                {% if job.application_link or job.email %}
+                <div class="sidebar-card" style="text-align:center;">
+                    <p style="font-size:0.875rem;color:var(--color-ink-muted);margin-bottom:1rem;">¿Listo para postularte?</p>
+                    {% if job.application_link %}
+                    <a href="{{ job.application_link }}" class="btn btn-blue" target="_blank" rel="noopener" style="width:100%;display:block;text-align:center;">
+                        Aplicar ahora →
+                    </a>
+                    {% elif job.email %}
+                    <a href="mailto:{{ job.email }}" class="btn btn-blue" style="width:100%;display:block;text-align:center;">
+                        Aplicar por email →
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
 
                 <div class="sidebar-card">
                     <div class="sidebar-card-inner">
@@ -91,27 +105,11 @@
                             {% if job.experience %}<tr><td class="sidebar-table-key">Experiencia</td><td class="sidebar-table-val">{{ job.experience }}</td></tr>{% endif %}
                             {% if job.schedule %}<tr><td class="sidebar-table-key">Horario</td><td class="sidebar-table-val">{{ job.schedule }}</td></tr>{% endif %}
                             <tr><td class="sidebar-table-key">Publicado</td><td class="sidebar-table-val">{{ job.published_at|date:"d/m/Y" }}</td></tr>
+                            {% if job.email %}<tr><td class="sidebar-table-key">Email</td><td class="sidebar-table-val"><a href="mailto:{{ job.email }}" style="color:var(--color-cyan);">{{ job.email }}</a></td></tr>{% endif %}
+                            {% if job.phone %}<tr><td class="sidebar-table-key">Teléfono</td><td class="sidebar-table-val">{{ job.phone }}</td></tr>{% endif %}
                         </tbody>
                     </table>
                 </div>
-
-                {% if job.email or job.phone %}
-                <div class="sidebar-card">
-                    <table class="sidebar-table">
-                        <tbody>
-                            {% if job.email %}
-                            <tr>
-                                <td class="sidebar-table-key">Email</td>
-                                <td class="sidebar-table-val"><a href="mailto:{{ job.email }}" style="color:var(--color-cyan);">{{ job.email }}</a></td>
-                            </tr>
-                            {% endif %}
-                            {% if job.phone %}
-                            <tr><td class="sidebar-table-key">Teléfono</td><td class="sidebar-table-val">{{ job.phone }}</td></tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
-                </div>
-                {% endif %}
 
             </aside>
 
@@ -119,15 +117,11 @@
     </div>
 </section>
 
-<!-- RECURSOS RELACIONADOS: reusa el partial de afiliados -->
 <div id="section-recursos-detail">
     {% include "core/partials/_afiliados.html" %}
 </div>
 
-<!-- BLOG RELACIONADO -->
 {% include "core/partials/_blog.html" %}
-
-<!-- CTA SUSCRIPCIÓN -->
 {% include "core/partials/_subscribe.html" %}
 
 {% endblock %}

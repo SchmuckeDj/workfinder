@@ -13,6 +13,8 @@ from django.conf import settings
 API_URL = "http://localhost:8000/api/incoming-job/"
 TOKEN = settings.AUTOMATION_API_TOKEN
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+BASE_TRABAJOSDIARIOS = "https://do.trabajosdiarios.com"
+BASE_ALDABA = "https://www.aldaba.com"
 
 
 def post_job(raw_text, source):
@@ -25,9 +27,15 @@ def post_job(raw_text, source):
     return resp.status_code, resp.json()
 
 
+def full_url(href, base):
+    if not href:
+        return ""
+    return href if href.startswith("http") else f"{base}{href}"
+
+
 def scrape_trabajosdiarios():
     print("-> Scrapeando trabajosdiarios.com...")
-    resp = requests.get("https://do.trabajosdiarios.com/", headers=HEADERS, timeout=15)
+    resp = requests.get(f"{BASE_TRABAJOSDIARIOS}/", headers=HEADERS, timeout=15)
     soup = BeautifulSoup(resp.text, "html.parser")
     seen = set()
     count = 0
@@ -39,7 +47,8 @@ def scrape_trabajosdiarios():
         text = tag.get_text(separator="\n", strip=True)
         if len(text) < 20:
             continue
-        status, data = post_job(f"{text}\nURL: {href}", "trabajosdiarios")
+        url = full_url(href, BASE_TRABAJOSDIARIOS)
+        status, data = post_job(f"{text}\nURL: {url}", "trabajosdiarios")
         print(f"  [{status}] {text[:60]!r}")
         count += 1
     print(f"  Total: {count}")
@@ -47,7 +56,7 @@ def scrape_trabajosdiarios():
 
 def scrape_aldaba():
     print("-> Scrapeando aldaba.com...")
-    resp = requests.get("https://www.aldaba.com/rd/empleos/", headers=HEADERS, timeout=15)
+    resp = requests.get(f"{BASE_ALDABA}/rd/empleos/", headers=HEADERS, timeout=15)
     soup = BeautifulSoup(resp.text, "html.parser")
     jobs = soup.select('article, .oferta, [class*="oferta"]') or soup.select('a[href*="/empleo/"]')
     seen = set()
@@ -61,7 +70,8 @@ def scrape_aldaba():
         text = tag.get_text(separator="\n", strip=True)
         if len(text) < 20:
             continue
-        status, data = post_job(f"{text}\nURL: {href}" if href else text, "aldaba")
+        url = full_url(href, BASE_ALDABA)
+        status, data = post_job(f"{text}\nURL: {url}" if url else text, "aldaba")
         print(f"  [{status}] {text[:60]!r}")
         count += 1
     print(f"  Total: {count}")
