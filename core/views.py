@@ -19,6 +19,7 @@ class HomeView(FormView):
         approved_jobs = list(Job.objects.filter(status=Job.Status.APPROVED)[:6])
         context['jobs'] = approved_jobs
         context['jobs_count'] = len(approved_jobs)
+        context['articulos_preview'] = Articulo.objects.filter(is_active=True)[:2]
         return context
 
     def form_valid(self, form):
