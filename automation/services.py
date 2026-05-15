@@ -5,14 +5,18 @@ import unicodedata
 
 import anthropic
 from django.conf import settings
-from PIL import Image
-import pytesseract
 
 from core.models import Job
 
 logger = logging.getLogger(__name__)
 
-pytesseract.pytesseract.tesseract_cmd = settings.TESSERACT_CMD
+try:
+    from PIL import Image
+    import pytesseract
+    pytesseract.pytesseract.tesseract_cmd = settings.TESSERACT_CMD
+    OCR_AVAILABLE = True
+except ImportError:
+    OCR_AVAILABLE = False
 
 _client = None
 
@@ -29,6 +33,8 @@ def _get_client():
 # ---------------------------------------------------------------------------
 
 def extract_text_from_image(image_path):
+    if not OCR_AVAILABLE:
+        return ""
     image = Image.open(image_path)
     return pytesseract.image_to_string(image, lang="spa").strip()
 
