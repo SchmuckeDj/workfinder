@@ -18,6 +18,7 @@ try:
 except ImportError:
     OCR_AVAILABLE = False
 
+    
 _client = None
 
 
